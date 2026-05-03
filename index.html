@@ -177,6 +177,12 @@
         const bloomCanvas = document.createElement('canvas');
         const bloomCtx = bloomCanvas.getContext('2d');
         
+        // --- FPS LIMITER ---
+        const FPS_LIMIT = 60;
+        const fpsInterval = 1000 / FPS_LIMIT;
+        let then = performance.now();
+        let now, elapsed;
+
         // --- CAMERA SYSTEM ---
         const camera = { x: 0, y: 0, zoom: 1, targetZoom: 1 };
         const keys = {};
@@ -662,7 +668,6 @@
             return ambientDarkness; 
         }
 
-        // --- CLASSES ---
         class Particle {
             constructor(x, y, vx, vy, color, life, size, type = 'normal', isEnemy = false, damage = 0) {
                 this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = color; this.life = life; this.maxLife = life;
@@ -1351,6 +1356,14 @@
         // --- MAIN LOOP ---
         function animate() {
             if (isBSOD) return; 
+            
+            requestAnimationFrame(animate);
+
+            // FPS LIMITER LOGIC
+            now = performance.now();
+            elapsed = now - then;
+            if (elapsed <= fpsInterval) return; 
+            then = now - (elapsed % fpsInterval);
 
             if (Math.random() < 0.02) targetWind = (Math.random() - 0.5) * 8;
             if (currentWeather === 'thunderstorm' || tornadoes.length > 0) targetWind = (Math.random() - 0.5) * 20;
@@ -1505,10 +1518,10 @@
             ctx.drawImage(bloomCanvas, 0, 0); ctx.filter = 'blur(2px)'; ctx.drawImage(bloomCanvas, 0, 0); ctx.restore();
 
             if (nukeFlash > 0) { ctx.fillStyle = `rgba(255, 255, 255, ${nukeFlash})`; ctx.fillRect(0, 0, canvas.width, canvas.height); nukeFlash -= 0.02; }
-            updateTime(); requestAnimationFrame(animate);
+            updateTime();
         }
 
-        resize(); window.addEventListener('resize', resize); animate();
+        resize(); window.addEventListener('resize', resize); requestAnimationFrame(animate);
     </script>
 </body>
 </html>
