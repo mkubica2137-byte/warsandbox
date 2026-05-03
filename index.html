@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixel War Simulator - Control & Fun Update</title>
+    <title>Pixel War Simulator - Mobile & Fixes Update</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #000; overflow: hidden; user-select: none; touch-action: none; }
@@ -24,6 +24,14 @@
             background: #a82eff; color: black; border: none; padding: 10px 15px;
             font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
+
+        #mobile-pan-toggle {
+            display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30;
+            background: #2a2a3a; color: #fff; border: 2px solid #a82eff; padding: 12px 25px;
+            font-weight: bold; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(168,46,255,0.4);
+            font-size: 1rem;
+        }
+        #mobile-pan-toggle.pan-mode { background: #a82eff; color: #000; }
 
         h2 { font-size: 1.1rem; margin-bottom: 5px; text-align: center; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
         h3 { font-size: 0.8rem; color: #a82eff; border-bottom: 1px solid #445; padding-bottom: 3px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;}
@@ -71,7 +79,8 @@
 
         @media (max-width: 768px) {
             #mobile-menu-btn { display: block; }
-            #toolbar { transform: translateX(-100%); width: 220px; }
+            #mobile-pan-toggle { display: block; }
+            #toolbar { transform: translateX(-100%); width: 240px; }
             #toolbar.open { transform: translateX(0); }
             #ui-layer { left: 10px; top: 50px; flex-direction: column; gap: 10px; right: 10px; align-items: flex-end; }
             #controls-display { display: none; }
@@ -82,6 +91,7 @@
 <body>
 
     <button id="mobile-menu-btn" onclick="toggleMenu()">🍔 Menu</button>
+    <button id="mobile-pan-toggle" onclick="toggleMobilePanMode()">👆 Mode: Tool</button>
 
     <div id="toolbar">
         <h2 style="margin-top: 30px;">War Sandbox</h2>
@@ -194,7 +204,8 @@
         const camera = { x: 0, y: 0, zoom: 1, targetZoom: 1 };
         const keys = {};
         let isMouseDown = false;
-        let possessedEntity = null; // Player Control
+        let possessedEntity = null; 
+        let mobilePanMode = false; // Toggle for mobile users
 
         window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
         window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
@@ -238,7 +249,7 @@
             hit: function() { this.playTone(Math.random()*100+200, 'triangle', 0.1, 0.03); },
             thunder: function() { this.playTone(Math.random()*20+30, 'sawtooth', 1.5, 0.3, 10); },
             splash: function() { this.playTone(Math.random()*100+300, 'sine', 0.2, 0.05, 50); },
-            fart: function() { this.playTone(Math.random()*20+40, 'sawtooth', 0.5, 0.3, 20); } // Outouse sounds
+            fart: function() { this.playTone(Math.random()*20+40, 'sawtooth', 0.5, 0.3, 20); } 
         };
 
         const entities = [], particles = [], structures = [], orbitalLasers = [], lightningBolts = [], tornadoes = [], ragdolls = [];
@@ -297,6 +308,18 @@
 
         function toggleMenu() { document.getElementById('toolbar').classList.toggle('open'); }
         function toggleDisco() { isDisco = !isDisco; if(isDisco) audioSystem.playTone(300, 'square', 0.5, 0.1, 100); }
+        
+        function toggleMobilePanMode() {
+            mobilePanMode = !mobilePanMode;
+            const btn = document.getElementById('mobile-pan-toggle');
+            if(mobilePanMode) {
+                btn.innerText = "🖐️ Mode: Pan Camera";
+                btn.classList.add('pan-mode');
+            } else {
+                btn.innerText = "👆 Mode: Tool";
+                btn.classList.remove('pan-mode');
+            }
+        }
 
         function generateLightningPath(x1, y1, x2, y2, segments, jitter = 30) {
             let path = [{x: x1, y: y1}];
@@ -523,7 +546,9 @@
                     }
                 }
             } else if (currentTool === 'AirStrike') {
-                for(let i=0; i<8; i++) { setTimeout(() => { addParticle(w.x + (i*60) - 200, camera.y - canvas.height/camera.zoom, 2, 8, '#222', 150, 8, 'bomb', false, 150); addParticle(w.x - (i*60) + 200, camera.y - canvas.height/camera.zoom - 50, -2, 8, '#222', 150, 8, 'bomb', false, 150); }, i * 200); }
+                for(let i=0; i<8; i++) {
+                    setTimeout(() => { addParticle(w.x + (i*60) - 200, camera.y - canvas.height/camera.zoom, 2, 8, '#222', 150, 8, 'bomb', false, 150); addParticle(w.x - (i*60) + 200, camera.y - canvas.height/camera.zoom - 50, -2, 8, '#222', 150, 8, 'bomb', false, 150); }, i * 200);
+                }
             } else if (currentTool === 'Laser') { orbitalLasers.push({ x: w.x, life: 60, radius: 30 }); screenShake = 30;
             } else if (currentTool === 'BananaBomb') { addParticle(w.x, camera.y - canvas.height/camera.zoom, 0, 5, '#ff0', 200, 10, 'banana_cluster');
             } else spawnEntity(currentTool, w.x, w.y);
@@ -545,37 +570,41 @@
             audioSystem.init(); audioSystem.resume();
             isMouseDown = true;
             if (e.touches.length === 2) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX;
-                let dy = e.touches[0].clientY - e.touches[1].clientY;
+                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY;
                 lastTouchDist = Math.hypot(dx, dy);
                 lastTouchCenter = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
                 draggedObj = null; 
             } else if (e.touches.length === 1) { 
                 lastTouchCenter = null; lastTouchDist = null;
-                handleInputStart(e, e.touches[0].clientX, e.touches[0].clientY); 
+                if(mobilePanMode && !possessedEntity) {
+                    lastTouchCenter = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                } else {
+                    handleInputStart(e, e.touches[0].clientX, e.touches[0].clientY); 
+                }
             }
         }, {passive: false});
 
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault(); 
             if (e.touches.length === 2 && lastTouchCenter && lastTouchDist) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX;
-                let dy = e.touches[0].clientY - e.touches[1].clientY;
-                let dist = Math.hypot(dx, dy);
-                let center = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY;
+                let dist = Math.hypot(dx, dy); let center = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
 
-                let zoomDelta = dist / lastTouchDist;
-                camera.targetZoom *= zoomDelta;
-                camera.targetZoom = Math.max(0.2, Math.min(camera.targetZoom, 3));
-                camera.zoom = camera.targetZoom; 
-
-                camera.x -= (center.x - lastTouchCenter.x) / camera.zoom;
-                camera.y -= (center.y - lastTouchCenter.y) / camera.zoom;
+                let zoomDelta = dist / lastTouchDist; camera.targetZoom *= zoomDelta; camera.targetZoom = Math.max(0.2, Math.min(camera.targetZoom, 3)); camera.zoom = camera.targetZoom; 
+                camera.x -= (center.x - lastTouchCenter.x) / camera.zoom; camera.y -= (center.y - lastTouchCenter.y) / camera.zoom;
 
                 lastTouchDist = dist; lastTouchCenter = center;
             } else if (e.touches.length === 1) {
-                mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; let w = screenToWorld(mouseX, mouseY);
-                if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; }
+                mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; 
+                
+                if (mobilePanMode && !possessedEntity && lastTouchCenter) {
+                    camera.x -= (mouseX - lastTouchCenter.x) / camera.zoom;
+                    camera.y -= (mouseY - lastTouchCenter.y) / camera.zoom;
+                    lastTouchCenter = { x: mouseX, y: mouseY };
+                } else {
+                    let w = screenToWorld(mouseX, mouseY);
+                    if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; }
+                }
             }
         }, {passive: false});
 
@@ -818,10 +847,7 @@
                     ctx.fillStyle = '#111'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y)+10, this.width-10, this.height-10);
                     ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y + 20, 4, 0, Math.PI*2); ctx.fill();
                     ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(this.x + this.width/2 + 2, this.y + 19, 4, 0, Math.PI*2); ctx.fill();
-                    // Fart logic
-                    if (Math.random() < 0.005) {
-                        for (let e of entities) { if(Math.abs(e.x - this.x) < 50) { audioSystem.fart(); break; } }
-                    }
+                    if (Math.random() < 0.005) { for (let e of entities) { if(Math.abs(e.x - this.x) < 50) { audioSystem.fart(); break; } } }
                 } else if (this.type === 'trampoline') {
                     ctx.fillStyle = '#aa0'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
                     ctx.fillStyle = '#333'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y), this.width-10, 4);
@@ -921,7 +947,7 @@
                     let gyAtStruct = getGroundY(s.x + s.width/2);
                     
                     if (s.type === 'trampoline' && Math.abs(this.x + this.width/2 - (s.x + s.width/2)) < s.width/2 + 5 && this.y >= gyAtStruct - this.height - 20) {
-                        this.vy = -15; // Bounce!
+                        this.vy = -15; 
                     }
 
                     if (!s.destroyed && s.type === 'mine' && this.y >= gyAtStruct - this.height - 5 && Math.abs(this.x + this.width/2 - (s.x + 10)) < 15) { s.destroyed = true; createExplosion(s.x + 10, s.y, 40, true, 200); }
@@ -1006,9 +1032,7 @@
                 
                 this.drawDialogue();
 
-                if(this.isPossessed) {
-                    ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(cx, this.y - 10); ctx.lineTo(cx - 5, this.y - 20); ctx.lineTo(cx + 5, this.y - 20); ctx.fill();
-                }
+                if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(cx, this.y - 10); ctx.lineTo(cx - 5, this.y - 20); ctx.lineTo(cx + 5, this.y - 20); ctx.fill(); }
             }
         }
 
@@ -1022,9 +1046,7 @@
                 this.bulletColor = this.isEnemy ? '#ff4444' : '#ffff00';
             }
             update() {
-                if (isDisco) {
-                    if (Date.now() % 500 < 30 && !this.isFlying && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
-                }
+                if (isDisco && Date.now() % 500 < 30 && !this.isFlying && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
 
                 this.checkCover(); this.applyGravity();
                 if (this.health <= 0) { 
@@ -1035,28 +1057,31 @@
                 if (draggedObj === this) return;
 
                 if (this.isPossessed) {
-                    this.aiState = 'possessed';
-                    this.vx = 0;
+                    this.aiState = 'possessed'; this.vx = 0;
+                    let wMouse = screenToWorld(mouseX, mouseY);
+                    
                     if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    if ((keys['w'] || keys['arrowup'] || keys[' ']) && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) {
-                        this.vy = -8; 
+                    if ((keys['w'] || keys['arrowup'] || keys[' ']) && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -8; }
+                    
+                    if (isMouseDown && !keys['a'] && !keys['d']) {
+                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
+                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                        if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -8; }
                     }
 
-                    let wMouse = screenToWorld(mouseX, mouseY);
                     if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
 
                     if (isMouseDown) {
                         this.shootTimer--;
                         if (this.shootTimer <= 0) {
                             audioSystem.shoot(); let angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x);
-                            addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 20); // player does more dmg
+                            addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 20);
                             addParticle(this.x+5, this.y+8, -this.dir*2, -3, '#ffd700', 20, 2, 'casing');
                             this.shootTimer = 15; 
                         }
                     }
-                    this.x += this.vx;
-                    return; // Skip AI if possessed
+                    this.x += this.vx; return; 
                 }
 
                 let hasTarget = this.scanForTarget(this.attackRange);
@@ -1118,12 +1143,12 @@
         class Civilian extends Soldier {
             constructor(side, x, y) { super('civilian', x, y); this.exhaustion = 0; }
             update() {
-                if(this.isPossessed) { super.update(); return; } // Inherit manual control if possessed
+                if(this.isPossessed) { super.update(); return; } 
 
                 if (isDisco && Date.now() % 500 < 30 && !this.isFlying && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
 
                 this.checkCover(); this.applyGravity();
-                if (this.health <= 0) { this.dead = true; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
+                if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
                 if (draggedObj === this) return;
 
                 this.aiTimer--; this.exhaustion += 0.05;
@@ -1171,10 +1196,18 @@
                 
                 if (this.isPossessed) {
                     this.aiState = 'possessed'; this.vx = 0;
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
                     if ((keys['w'] || keys['arrowup'] || keys[' ']) && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -6; }
-                    let wMouse = screenToWorld(mouseX, mouseY); if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    
+                    if (isMouseDown && !keys['a'] && !keys['d']) {
+                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
+                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                        if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -6; }
+                    }
+
+                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
                     if (isMouseDown && Math.hypot(wMouse.x - this.x, wMouse.y - this.y) < 40) {
                         for(let e of entities) { if(!e.dead && e !== this && Math.hypot(e.x-this.x, e.y-this.y) < 30) { e.health -= 5; audioSystem.hit(); break; } }
                     }
@@ -1200,11 +1233,11 @@
         class BedwarsPlayer extends Soldier {
             constructor(side, x, y) { super(side, x, y); this.width = 14; this.height = 28; this.baseSpeed = Math.random() * 0.5 + 1.5; this.maxHealth = 40; this.health = 40; this.attackRange = 300; this.buildTimer = 0; }
             update() {
-                if(this.isPossessed) { super.update(); return; } // Inherit manual control
+                if(this.isPossessed) { super.update(); return; } 
 
                 this.checkCover(); 
                 if (draggedObj !== this && !this.isFlying) { let floorY = getGroundY(this.x + this.width/2) - this.height - 15; if (this.y < floorY) { this.vy += 0.5; this.y += this.vy; } else if (this.y >= floorY) { this.y = floorY; this.vy = 0; } }
-                if (this.health <= 0) { this.dead = true; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+7, this.y+14, '#0ff', 0, 0)); return; }
+                if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+7, this.y+14, '#0ff', 0, 0)); return; }
                 if (draggedObj === this) return;
                 
                 if (isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-20) this.vy = -5;
@@ -1328,7 +1361,7 @@
             update() {
                 if(this.isPossessed) { super.update(); return; }
                 this.checkCover(); this.applyGravity();
-                if (this.health <= 0) { this.dead = true; createBlood(this.x, this.y, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
+                if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x, this.y, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
                 if (draggedObj === this) return;
 
                 if (isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
@@ -1374,11 +1407,18 @@
 
                 if (this.isPossessed) {
                     this.aiState = 'possessed'; this.vx = 0;
+                    let wMouse = screenToWorld(mouseX, mouseY);
+                    
                     if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; // Climb
+                    if (isMouseDown && !keys['a'] && !keys['d']) {
+                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
+                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    }
+
+                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; 
                     
-                    let wMouse = screenToWorld(mouseX, mouseY); if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
                     if (isMouseDown) {
                         this.shootTimer--;
                         if (this.shootTimer <= 0) {
@@ -1391,7 +1431,7 @@
                 }
 
                 if (this.scanForTarget(this.attackRange)) { this.aiState = 'attack'; this.vx = 0; } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; }
-                if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; // Climb terrain
+                if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; 
                 this.x += this.vx;
 
                 if (this.aiState === 'attack') {
@@ -1473,9 +1513,14 @@
                 
                 if (this.isPossessed) {
                     this.aiState = 'possessed'; this.vx = 0;
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    let wMouse = screenToWorld(mouseX, mouseY); if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if (isMouseDown && !keys['a'] && !keys['d']) {
+                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
+                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    }
+                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
                     if (isMouseDown && this.shootTimer <= 0) {
                         audioSystem.heavyShoot(); let angle = Math.atan2(wMouse.y-(this.y-10), wMouse.x-(this.x+30));
                         addParticle(this.x+(this.dir===1?50:10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); this.shootTimer = 50; 
@@ -1513,10 +1558,15 @@
                 
                 if (this.isPossessed) {
                     this.aiState = 'possessed'; this.vx = 0;
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    if (isMouseDown && !keys['a'] && !keys['d']) {
+                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
+                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    }
                     if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2;
-                    let wMouse = screenToWorld(mouseX, mouseY); if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
                     if (isMouseDown && this.shootTimer <= 0) {
                         audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+12));
                         addParticle(this.x+12, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15+(Math.random()-0.5)*2, '#ff0', 40, 4, 'bullet', this.isEnemy, 25); this.shootTimer = 2; 
@@ -1554,12 +1604,20 @@
 
                 if (this.isPossessed) {
                     this.aiState = 'possessed';
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
                     if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2;
                     if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
                     
-                    let wMouse = screenToWorld(mouseX, mouseY); if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
+                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; }
+                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; }
+                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; }
+                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; }
+                    }
+                    
+                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
                     if (isMouseDown && this.shootTimer <= 0) {
                         audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+20));
                         addParticle(this.x+20, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 50, 3, 'bullet', this.isEnemy, 15);
@@ -1589,11 +1647,19 @@
                 
                 if (this.isPossessed) {
                     this.aiState = 'possessed';
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 1.5; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.x += this.speed * 1.5; this.dir = 1; }
                     if (keys['w'] || keys['arrowup']) this.y -= this.speed * 1.5;
                     if (keys['s'] || keys['arrowdown']) this.y += this.speed * 1.5;
                     
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
+                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 1.5; this.dir = -1;}
+                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 1.5; this.dir = 1;}
+                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 1.5; }
+                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 1.5; }
+                    }
+
                     if (isMouseDown && this.dropTimer <= 0) { addParticle(this.x+15, this.y+10, this.dir*2, 5, '#222', 120, 6, 'bomb', this.isEnemy, 100); this.dropTimer = 20; }
                     this.dropTimer--;
                     return;
@@ -1614,15 +1680,23 @@
             update() {
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+30, this.y+10, 50, true); return; } if (draggedObj === this) return;
                 
-                this.y += Math.sin(Date.now() / 200) * 1.5; // Hover
+                this.y += Math.sin(Date.now() / 200) * 1.5; 
 
                 if (this.isPossessed) {
                     this.beamActive = false;
+                    let wMouse = screenToWorld(mouseX, mouseY);
                     if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; }
                     if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
                     if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2;
                     if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
                     
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
+                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; }
+                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; }
+                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; }
+                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; }
+                    }
+
                     if (isMouseDown) {
                         this.beamActive = true;
                         for(let e of entities) { if(!e.dead && e !== this && Math.abs(e.x - (this.x+this.width/2)) < 30 && e.y > this.y) { e.y -= 5; e.vy = 0; e.isFlying = true; setTimeout(()=>{e.isFlying=false;}, 500); } }
@@ -1637,7 +1711,7 @@
                     else { 
                         this.beamActive = true; 
                         this.target.y -= 3; this.target.vy = 0; this.target.isFlying = true; setTimeout(()=>{if(this.target) this.target.isFlying=false;}, 500);
-                        if (this.target.y < this.y + 20) { this.target.health = 0; audioSystem.hit(); } // Abducted
+                        if (this.target.y < this.y + 20) { this.target.health = 0; audioSystem.hit(); } 
                     }
                 } else { this.x += this.speed * this.dir; if(Math.random()<0.01) this.dir *= -1; }
             }
@@ -1677,8 +1751,9 @@
 
         // --- MAIN LOOP ---
         function animate() {
-            if (isBSOD) return; 
             requestAnimationFrame(animate);
+
+            if (isBSOD) return; 
 
             // FPS LIMITER
             now = performance.now(); elapsed = now - then; if (elapsed <= fpsInterval) return; then = now - (elapsed % fpsInterval);
@@ -1760,9 +1835,10 @@
             bloomCtx.clearRect(0, 0, bloomCanvas.width, bloomCanvas.height); bloomCtx.save();
             bloomCtx.translate(bloomCanvas.width/2, bloomCanvas.height/2); bloomCtx.scale(camera.zoom, camera.zoom); bloomCtx.translate(-camera.x, -camera.y);
 
-            if (darkness > 0.05) {
+            // LIGHTMAP & BLOOM RENDERING
+            if (darkness > 0.05 || isDisco) {
                 lightCtx.clearRect(0, 0, canvas.width, canvas.height); lightCtx.globalCompositeOperation = 'source-over';
-                lightCtx.fillStyle = `rgba(0, 0, 15, ${darkness})`; lightCtx.fillRect(0, 0, canvas.width, canvas.height);
+                lightCtx.fillStyle = `rgba(0, 0, 15, ${isDisco ? 0.3 : darkness})`; lightCtx.fillRect(0, 0, canvas.width, canvas.height);
                 lightCtx.globalCompositeOperation = 'destination-out'; lightCtx.save(); lightCtx.translate(canvas.width/2, canvas.height/2);
                 lightCtx.scale(camera.zoom, camera.zoom); lightCtx.translate(-camera.x, -camera.y);
 
@@ -1855,7 +1931,7 @@
             updateTime();
         }
 
-        resize(); window.addEventListener('resize', resize); requestAnimationFrame(animate);
+        resize(); window.addEventListener('resize', resize); animate();
     </script>
 </body>
 </html>
