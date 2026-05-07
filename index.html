@@ -3,43 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixel War Simulator - Mobile & Fixes Update</title>
+    <title>Pixel War Simulator - Ultimate Update</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #000; overflow: hidden; user-select: none; touch-action: none; }
         canvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
-        
-        #toolbar {
-            position: absolute; top: 0; left: 0; width: 250px; height: 100vh;
-            background: rgba(15, 15, 25, 0.85); backdrop-filter: blur(8px);
-            border-right: 2px solid #334; padding: 15px 10px; color: white;
-            display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index: 20;
-            transition: transform 0.3s ease;
-        }
+        #toolbar { position: absolute; top: 0; left: 0; width: 250px; height: 100vh; background: rgba(15, 15, 25, 0.85); backdrop-filter: blur(8px); border-right: 2px solid #334; padding: 15px 10px; color: white; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index: 20; transition: transform 0.3s ease; }
         #toolbar::-webkit-scrollbar { width: 6px; }
         #toolbar::-webkit-scrollbar-thumb { background: #556; border-radius: 3px; }
-        
-        #mobile-menu-btn {
-            display: none; position: absolute; top: 10px; left: 10px; z-index: 30;
-            background: #a82eff; color: black; border: none; padding: 10px 15px;
-            font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        #mobile-pan-toggle {
-            display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30;
-            background: #2a2a3a; color: #fff; border: 2px solid #a82eff; padding: 12px 25px;
-            font-weight: bold; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(168,46,255,0.4);
-            font-size: 1rem;
-        }
+        #mobile-menu-btn { display: none; position: absolute; top: 10px; left: 10px; z-index: 30; background: #a82eff; color: black; border: none; padding: 10px 15px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        #mobile-pan-toggle { display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30; background: #2a2a3a; color: #fff; border: 2px solid #a82eff; padding: 12px 25px; font-weight: bold; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(168,46,255,0.4); font-size: 1rem; }
         #mobile-pan-toggle.pan-mode { background: #a82eff; color: #000; }
-
         h2 { font-size: 1.1rem; margin-bottom: 5px; text-align: center; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
         h3 { font-size: 0.8rem; color: #a82eff; border-bottom: 1px solid #445; padding-bottom: 3px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;}
-        .btn { 
-            background: #2a2a3a; border: 1px solid #445; color: #ddd; padding: 6px 8px; 
-            border-radius: 5px; cursor: pointer; text-align: left; transition: 0.2s;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
-        }
+        .btn { background: #2a2a3a; border: 1px solid #445; color: #ddd; padding: 6px 8px; border-radius: 5px; cursor: pointer; text-align: left; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         .btn:hover { background: #3a3a4a; border-color: #a82eff; }
         .btn.active { background: #a82eff; color: black; font-weight: bold; box-shadow: 0 0 10px #a82eff; }
         .btn.danger { background: #511; border-color: #f00; color: #f88; text-align: center; justify-content: center; font-weight: bold; margin-top: 10px;}
@@ -48,23 +25,12 @@
         .btn.laser:hover { background: #0ff; color: black; box-shadow: 0 0 15px #0ff;}
         .btn.glitch { background: #115; border-color: #00f; color: #88f; text-align: center; justify-content: center; font-weight: bold; margin-top: 5px; animation: glitch 2s infinite; }
         .btn.glitch:hover { background: #00f; color: white; }
-
         @keyframes glitch { 0% { transform: translate(0) } 20% { transform: translate(-2px, 1px) } 40% { transform: translate(-1px, -1px) } 60% { transform: translate(2px, 1px) } 80% { transform: translate(1px, -1px) } 100% { transform: translate(0) } }
-        
-        #ui-layer {
-            position: absolute; top: 10px; right: 20px; left: 270px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            pointer-events: none; z-index: 5; transition: left 0.3s ease;
-        }
-
-        #time-display, #stats-display, #controls-display {
-            color: white; font-family: monospace; font-size: 14px; text-shadow: 1px 1px 4px black;
-            background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 5px; text-align: center; backdrop-filter: blur(4px);
-        }
+        #ui-layer { position: absolute; top: 10px; right: 20px; left: 270px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 5; transition: left 0.3s ease; }
+        #time-display, #stats-display, #controls-display { color: white; font-family: monospace; font-size: 14px; text-shadow: 1px 1px 4px black; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 5px; text-align: center; backdrop-filter: blur(4px); }
         .stat-ally { color: #6a6; font-weight: bold; }
         .stat-enemy { color: #d44; font-weight: bold; }
         .stat-civ { color: #aaa; font-weight: bold; }
-
         .side-toggle-container { display: flex; gap: 5px; margin-bottom: 5px; }
         .side-btn { flex: 1; text-align: center; justify-content: center; padding: 6px; border-radius: 5px; cursor: pointer; border: 1px solid #445; font-weight: bold; transition: 0.2s; font-size: 0.8rem;}
         .side-btn.ally { background: #2a2a3a; color: #6a6; }
@@ -73,45 +39,46 @@
         .side-btn.ally.active { background: #6a6; color: black; box-shadow: 0 0 10px #6a6; }
         .side-btn.enemy.active { background: #d44; color: black; box-shadow: 0 0 10px #d44; }
         .side-btn.civilian.active { background: #aaa; color: black; box-shadow: 0 0 10px #aaa; }
-
+        .lang-btn.active { background: #ddd; color: #000; box-shadow: 0 0 5px #fff; }
         .slider-container { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
         input[type=range] { flex: 1; margin-left: 10px; cursor: pointer; accent-color: #a82eff;}
-
         @media (max-width: 768px) {
-            #mobile-menu-btn { display: block; }
-            #mobile-pan-toggle { display: block; }
-            #toolbar { transform: translateX(-100%); width: 240px; }
-            #toolbar.open { transform: translateX(0); }
+            #mobile-menu-btn { display: block; } #mobile-pan-toggle { display: block; }
+            #toolbar { transform: translateX(-100%); width: 240px; } #toolbar.open { transform: translateX(0); }
             #ui-layer { left: 10px; top: 50px; flex-direction: column; gap: 10px; right: 10px; align-items: flex-end; }
-            #controls-display { display: none; }
-            #time-display, #stats-display { font-size: 11px; padding: 4px 10px; }
+            #controls-display { display: none; } #time-display, #stats-display { font-size: 11px; padding: 4px 10px; }
         }
     </style>
 </head>
 <body>
-
     <button id="mobile-menu-btn" onclick="toggleMenu()">🍔 Menu</button>
     <button id="mobile-pan-toggle" onclick="toggleMobilePanMode()">👆 Mode: Tool</button>
 
     <div id="toolbar">
-        <h2 style="margin-top: 30px;">War Sandbox</h2>
+        <h2 id="text-title" style="margin-top: 30px;">War Sandbox</h2>
         
-        <h3>Audio Settings</h3>
-        <div class="slider-container">
-            <span>🔊</span>
-            <input type="range" id="vol-slider" min="0" max="1" step="0.1" value="0.3" onchange="audioSystem.setVolume(this.value)">
+        <h3 id="text-lang">Language / Język / Язык</h3>
+        <div class="side-toggle-container">
+            <div class="side-btn lang-btn active" onclick="setLanguage('en', this)">EN</div>
+            <div class="side-btn lang-btn" onclick="setLanguage('pl', this)">PL</div>
+            <div class="side-btn lang-btn" onclick="setLanguage('ru', this)">RU</div>
         </div>
 
-        <h3>God Tools & Fun</h3>
+        <h3 id="text-audio">Audio Settings</h3>
+        <div class="slider-container"><span>🔊</span><input type="range" id="vol-slider" min="0" max="1" step="0.1" value="0.3" onchange="audioSystem.setVolume(this.value)"></div>
+
+        <h3 id="text-godtools">God Tools & Fun</h3>
         <button class="btn active" id="tool-grab" onclick="setTool('grab', this)">🖐️ Hand of God</button>
         <button class="btn" onclick="setTool('MindControl', this)" style="color: #f8f;">🧠 Mind Control</button>
         <button class="btn" onclick="setTool('AirStrike', this)">🎯 Call Airstrike</button>
+        <button class="btn" onclick="setTool('Meteor', this)" style="color: #f60;">☄️ Meteor Strike</button>
         <button class="btn laser" onclick="setTool('Laser', this)">🛰️ Orbital Laser</button>
-        <button class="btn danger" onclick="launchNuke()">☢️ LAUNCH NUKE</button>
+        <button class="btn danger" id="text-nuke" onclick="launchNuke()">☢️ LAUNCH NUKE</button>
         <button class="btn" onclick="setTool('BananaBomb', this)" style="color: #ff0;">🍌 Banana Bomb</button>
         <button class="btn glitch" onclick="setTool('Chair', this)">🪑 FLYING CHAIR</button>
 
-        <h3>Environment & Water</h3>
+        <h3 id="text-env">Environment & Water</h3>
+        <button class="btn danger" id="text-restart" onclick="restartWorld()">🔄 RESTART WORLD</button>
         <button class="btn" onclick="skipTime()">⏩ Fast Forward 1h</button>
         <button class="btn" onclick="toggleDisco()" style="color: #f0f;">🪩 Disco Party</button>
         <button class="btn" onclick="globalWaterLevel -= 20" style="color:#0af">🌊 Flood World</button>
@@ -122,14 +89,14 @@
         <button class="btn" onclick="setWeather('snow')">❄️ Blizzard</button>
         <button class="btn" onclick="spawnTornado()">🌪️ Spawn Tornado</button>
         
-        <h3>Team Selector</h3>
+        <h3 id="text-team">Team Selector</h3>
         <div class="side-toggle-container">
             <div id="btn-ally" class="side-btn ally active" onclick="setSpawnSide('ally')">ALLIES</div>
             <div id="btn-civilian" class="side-btn civilian" onclick="setSpawnSide('civilian')">CIV</div>
             <div id="btn-enemy" class="side-btn enemy" onclick="setSpawnSide('enemy')">FOES</div>
         </div>
 
-        <h3>Units & Infantry</h3>
+        <h3 id="text-units">Units & Infantry</h3>
         <button class="btn" onclick="setTool('Soldier', this)">🟢 Rifleman</button>
         <button class="btn" onclick="setTool('Civilian', this)" style="color:#aaa;">🧍 Civilian</button>
         <button class="btn" onclick="setTool('MachineGunner', this)">🟢 MG Gunner</button>
@@ -143,7 +110,7 @@
         <button class="btn" onclick="setTool('Paratrooper', this)">🪂 Paratrooper</button>
         <button class="btn" onclick="setTool('Bedwars', this)" style="color: #0ff;">🛏️ Bedwars Player</button>
         
-        <h3>Vehicles & Naval</h3>
+        <h3 id="text-vehicles">Vehicles & Naval</h3>
         <button class="btn" onclick="setTool('Boat', this)" style="color: #0af;">⛵ Naval Boat</button>
         <button class="btn" onclick="setTool('Tank', this)">🚜 Tank</button>
         <button class="btn" onclick="setTool('APC', this)" style="color: #6a6;">🚙 APC</button>
@@ -153,7 +120,7 @@
         <button class="btn" onclick="setTool('Plane', this)">✈️ Bomber Plane</button>
         <button class="btn" onclick="setTool('UFO', this)" style="color: #a0f;">🛸 Alien UFO</button>
 
-        <h3>Spawn Structures</h3>
+        <h3 id="text-structures">Spawn Structures</h3>
         <button class="btn" onclick="setTool('Tree', this)" style="color: #2e8b57;">🌳 Plant Tree</button>
         <button class="btn" onclick="setTool('Outhouse', this)" style="color: #0cf;">🚽 Porta-Potty</button>
         <button class="btn" onclick="setTool('Trampoline', this)" style="color: #ff0;">🟢 Trampoline</button>
@@ -168,7 +135,7 @@
         <button class="btn" onclick="setTool('AAGun', this)">📡 Anti-Air Flak</button>
         <button class="btn" onclick="setTool('Mine', this)">💣 Place Landmine</button>
 
-        <h3>Maps / Biomes</h3>
+        <h3 id="text-maps">Maps / Biomes</h3>
         <button class="btn" onclick="setMap('grassland')">🌲 Grassland</button>
         <button class="btn" onclick="setMap('forest')">🌳 Dark Forest</button>
         <button class="btn" onclick="setMap('desert')">🏜️ Desert</button>
@@ -194,18 +161,16 @@
         const bloomCanvas = document.createElement('canvas');
         const bloomCtx = bloomCanvas.getContext('2d');
         
-        // --- FPS LIMITER ---
         const FPS_LIMIT = 60;
         const fpsInterval = 1000 / FPS_LIMIT;
         let then = performance.now();
         let now, elapsed;
 
-        // --- CAMERA SYSTEM & INPUTS ---
         const camera = { x: 0, y: 0, zoom: 1, targetZoom: 1 };
         const keys = {};
         let isMouseDown = false;
         let possessedEntity = null; 
-        let mobilePanMode = false; // Toggle for mobile users
+        let mobilePanMode = false;
 
         window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
         window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
@@ -214,11 +179,21 @@
             camera.targetZoom = Math.max(0.2, Math.min(camera.targetZoom, 3));
         });
 
-        function screenToWorld(sx, sy) {
-            return { x: (sx - canvas.width / 2) / camera.zoom + camera.x, y: (sy - canvas.height / 2) / camera.zoom + camera.y };
+        function screenToWorld(sx, sy) { return { x: (sx - canvas.width / 2) / camera.zoom + camera.x, y: (sy - canvas.height / 2) / camera.zoom + camera.y }; }
+
+        const translations = {
+            en: { title: "War Sandbox", lang: "Language / Język / Язык", audio: "Audio Settings", godtools: "God Tools & Fun", env: "Environment & Water", team: "Team Selector", units: "Units & Infantry", vehicles: "Vehicles & Naval", structures: "Spawn Structures", maps: "Maps / Biomes", restart: "🔄 RESTART WORLD", nuke: "☢️ LAUNCH NUKE" },
+            pl: { title: "Piaskownica Wojny", lang: "Język / Language / Язык", audio: "Ustawienia Audio", godtools: "Narzędzia Boskie", env: "Środowisko i Woda", team: "Wybór Drużyny", units: "Jednostki i Piechota", vehicles: "Pojazdy i Flota", structures: "Budowle", maps: "Mapy / Biomy", restart: "🔄 ZRESTARTUJ ŚWIAT", nuke: "☢️ ODPAL BOMBĘ" },
+            ru: { title: "Военная песочница", lang: "Язык / Language / Język", audio: "Настройки звука", godtools: "Инструменты Бога", env: "Окружение и вода", team: "Выбор команды", units: "Пехота", vehicles: "Техника и Флот", structures: "Постройки", maps: "Карты / Биомы", restart: "🔄 ПЕРЕЗАПУСТИТЬ МИР", nuke: "☢️ ЗАПУСТИТЬ ЯДЕРНУЮ БОМБУ" }
+        };
+
+        function setLanguage(lang, btnElement) {
+            const dict = translations[lang]; if (!dict) return;
+            const keys = Object.keys(dict);
+            for(let key of keys) { let el = document.getElementById('text-' + key); if(el) el.innerText = dict[key]; }
+            if(btnElement) { document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active'); }
         }
 
-        // --- PROCEDURAL AUDIO ENGINE ---
         const audioSystem = {
             ctx: null, masterGain: null, initialized: false,
             init: function() {
@@ -233,15 +208,11 @@
             setVolume: function(val) { if(this.masterGain) this.masterGain.gain.value = val; },
             playTone: function(freq, type, duration, vol, drop = 0, noise = false) {
                 if(!this.initialized) return;
-                let osc = this.ctx.createOscillator();
-                let gain = this.ctx.createGain();
-                osc.type = type; 
+                let osc = this.ctx.createOscillator(); let gain = this.ctx.createGain(); osc.type = type; 
                 osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
                 if (drop > 0) osc.frequency.exponentialRampToValueAtTime(Math.max(1, freq - drop), this.ctx.currentTime + duration);
-                gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-                osc.connect(gain); gain.connect(this.masterGain);
-                osc.start(); osc.stop(this.ctx.currentTime + duration);
+                gain.gain.setValueAtTime(vol, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                osc.connect(gain); gain.connect(this.masterGain); osc.start(); osc.stop(this.ctx.currentTime + duration);
             },
             shoot: function() { this.playTone(Math.random()*150+300, 'square', 0.1, 0.05, 100); },
             heavyShoot: function() { this.playTone(Math.random()*100+150, 'sawtooth', 0.15, 0.08, 50); },
@@ -256,36 +227,23 @@
         const MAX_PARTICLES = 3000; 
         let gameTime = 8, dayCount = 1, bgElements = [], currentWeather = 'clear';
         let nukeFlash = 0, screenShake = 0, lightningFlash = 0, isBSOD = false, isDisco = false;
-        let spawnSide = 'ally'; 
-        let globalWaterLevel = 1000; 
-        let globalWind = 0, targetWind = 0; 
+        let spawnSide = 'ally', globalWaterLevel = 1000, globalWind = 0, targetWind = 0; 
 
-        // --- INFINITE CHUNK SYSTEM ---
-        const CHUNK_SIZE = 400;
-        const FARLANDS_THRESHOLD = 15000;
-        const terrainChunks = new Map();
+        const CHUNK_SIZE = 400; const FARLANDS_THRESHOLD = 15000; const terrainChunks = new Map();
 
         function generateChunk(cx) {
             let chunk = new Float32Array(CHUNK_SIZE);
             for(let i=0; i<CHUNK_SIZE; i++) {
-                let wx = cx * CHUNK_SIZE + i;
-                let dist = Math.abs(wx);
-                let baseHeight = canvas.height - 100;
-                
+                let wx = cx * CHUNK_SIZE + i; let dist = Math.abs(wx); let baseHeight = canvas.height - 100;
                 let h = Math.sin(wx * 0.002) * 40 + Math.sin(wx * 0.007) * 15;
-                if (dist > FARLANDS_THRESHOLD) {
-                    let chaos = Math.min((dist - FARLANDS_THRESHOLD) / 5000, 3);
-                    h += Math.tan(wx * 0.05) * 50 * chaos; 
-                    if (Math.random() < 0.05 * chaos) h -= Math.random() * 300 * chaos; 
-                }
+                if (dist > FARLANDS_THRESHOLD) { let chaos = Math.min((dist - FARLANDS_THRESHOLD) / 5000, 3); h += Math.tan(wx * 0.05) * 50 * chaos; if (Math.random() < 0.05 * chaos) h -= Math.random() * 300 * chaos; }
                 chunk[i] = baseHeight - h;
             }
             terrainChunks.set(cx, chunk);
         }
 
         function getGroundY(x) {
-            let chunkX = Math.floor(x / CHUNK_SIZE);
-            let localX = Math.floor(x) - (chunkX * CHUNK_SIZE);
+            let chunkX = Math.floor(x / CHUNK_SIZE); let localX = Math.floor(x) - (chunkX * CHUNK_SIZE);
             if (localX < 0) localX += CHUNK_SIZE; 
             if (!terrainChunks.has(chunkX)) generateChunk(chunkX);
             return terrainChunks.get(chunkX)[localX];
@@ -294,75 +252,46 @@
         function destroyTerrain(x, radius) {
             let cx = Math.floor(x);
             for(let i = cx - radius; i <= cx + radius; i++) {
-                let chunkX = Math.floor(i / CHUNK_SIZE);
-                let localX = i - (chunkX * CHUNK_SIZE);
+                let chunkX = Math.floor(i / CHUNK_SIZE); let localX = i - (chunkX * CHUNK_SIZE);
                 if (localX < 0) localX += CHUNK_SIZE;
                 if (!terrainChunks.has(chunkX)) generateChunk(chunkX);
-                
-                let dist = Math.abs(cx - i);
-                let depth = Math.sqrt(radius * radius - dist * dist);
-                let chunk = terrainChunks.get(chunkX);
-                chunk[localX] = Math.min(canvas.height + 500, chunk[localX] + depth);
+                let dist = Math.abs(cx - i); let depth = Math.sqrt(radius * radius - dist * dist);
+                let chunk = terrainChunks.get(chunkX); chunk[localX] = Math.min(canvas.height + 500, chunk[localX] + depth);
             }
+        }
+
+        function restartWorld() {
+            entities.length = 0; particles.length = 0; structures.length = 0; ragdolls.length = 0; orbitalLasers.length = 0; lightningBolts.length = 0; tornadoes.length = 0; terrainChunks.clear();
+            gameTime = 8; dayCount = 1; globalWaterLevel = canvas.height - 20; camera.x = canvas.width / 2; camera.y = 0;
+            generateBattlefield(); generateBackground();
         }
 
         function toggleMenu() { document.getElementById('toolbar').classList.toggle('open'); }
         function toggleDisco() { isDisco = !isDisco; if(isDisco) audioSystem.playTone(300, 'square', 0.5, 0.1, 100); }
-        
-        function toggleMobilePanMode() {
-            mobilePanMode = !mobilePanMode;
-            const btn = document.getElementById('mobile-pan-toggle');
-            if(mobilePanMode) {
-                btn.innerText = "🖐️ Mode: Pan Camera";
-                btn.classList.add('pan-mode');
-            } else {
-                btn.innerText = "👆 Mode: Tool";
-                btn.classList.remove('pan-mode');
-            }
-        }
+        function toggleMobilePanMode() { mobilePanMode = !mobilePanMode; const btn = document.getElementById('mobile-pan-toggle'); if(mobilePanMode) { btn.innerText = "🖐️ Mode: Pan Camera"; btn.classList.add('pan-mode'); } else { btn.innerText = "👆 Mode: Tool"; btn.classList.remove('pan-mode'); } }
 
         function generateLightningPath(x1, y1, x2, y2, segments, jitter = 30) {
-            let path = [{x: x1, y: y1}];
-            let dx = (x2 - x1) / segments, dy = (y2 - y1) / segments;
-            let cx = x1, cy = y1;
-            for(let i=1; i<segments; i++) { cx += dx + (Math.random()-0.5) * jitter; cy += dy + (Math.random()-0.5) * jitter; path.push({x: cx, y: cy}); }
-            path.push({x: x2, y: y2});
-            return path;
+            let path = [{x: x1, y: y1}]; let dx = (x2 - x1) / segments, dy = (y2 - y1) / segments; let cx = x1, cy = y1;
+            for(let i=1; i<segments; i++) { cx += dx + (Math.random()-0.5) * jitter; cy += dy + (Math.random()-0.5) * jitter; path.push({x: cx, y: cy}); } path.push({x: x2, y: y2}); return path;
         }
 
-        // --- VERLET RAGDOLL PHYSICS ---
         class VerletPoint { constructor(x, y) { this.x = x; this.y = y; this.oldx = x; this.oldy = y; } }
         class VerletStick {
             constructor(p1, p2, len) { this.p1 = p1; this.p2 = p2; this.len = len || Math.hypot(p1.x-p2.x, p1.y-p2.y); }
-            update() {
-                let dx = this.p2.x - this.p1.x, dy = this.p2.y - this.p1.y, dist = Math.hypot(dx, dy);
-                if(dist === 0) return;
-                let percent = ((this.len - dist) / dist) / 2;
-                let offsetX = dx * percent, offsetY = dy * percent;
-                this.p1.x -= offsetX; this.p1.y -= offsetY; this.p2.x += offsetX; this.p2.y += offsetY;
-            }
+            update() { let dx = this.p2.x - this.p1.x, dy = this.p2.y - this.p1.y, dist = Math.hypot(dx, dy); if(dist === 0) return; let percent = ((this.len - dist) / dist) / 2; let offsetX = dx * percent, offsetY = dy * percent; this.p1.x -= offsetX; this.p1.y -= offsetY; this.p2.x += offsetX; this.p2.y += offsetY; }
         }
         class Ragdoll {
             constructor(x, y, color, forceX, forceY) {
                 this.points = []; this.sticks = []; this.color = color; this.life = 600;
                 let head = new VerletPoint(x, y), neck = new VerletPoint(x, y+5), pelvis = new VerletPoint(x, y+15);
-                let lHand = new VerletPoint(x-8, y+10), rHand = new VerletPoint(x+8, y+10);
-                let lFoot = new VerletPoint(x-5, y+25), rFoot = new VerletPoint(x+5, y+25);
+                let lHand = new VerletPoint(x-8, y+10), rHand = new VerletPoint(x+8, y+10), lFoot = new VerletPoint(x-5, y+25), rFoot = new VerletPoint(x+5, y+25);
                 pelvis.oldx -= forceX; pelvis.oldy -= forceY; head.oldx -= forceX*1.2; head.oldy -= forceY*1.2;
                 this.points.push(head, neck, pelvis, lHand, rHand, lFoot, rFoot);
                 this.sticks.push(new VerletStick(head, neck, 5), new VerletStick(neck, pelvis, 10), new VerletStick(neck, lHand, 12), new VerletStick(neck, rHand, 12), new VerletStick(pelvis, lFoot, 12), new VerletStick(pelvis, rFoot, 12));
             }
             update() {
                 this.life--;
-                for(let p of this.points) {
-                    let vx = (p.x - p.oldx) * 0.98, vy = (p.y - p.oldy) * 0.98;
-                    p.oldx = p.x; p.oldy = p.y;
-                    p.x += vx + globalWind * 0.05; 
-                    p.y += vy + 0.5;
-                    let gy = getGroundY(p.x);
-                    if (p.y > gy) { p.y = gy; p.oldx = p.x - vx * 0.5; }
-                    if (p.y > globalWaterLevel) { p.y -= 0.6; p.oldx = p.x - vx * 0.9; } 
-                }
+                for(let p of this.points) { let vx = (p.x - p.oldx) * 0.98, vy = (p.y - p.oldy) * 0.98; p.oldx = p.x; p.oldy = p.y; p.x += vx + globalWind * 0.05; p.y += vy + 0.5; let gy = getGroundY(p.x); if (p.y > gy) { p.y = gy; p.oldx = p.x - vx * 0.5; } if (p.y > globalWaterLevel) { p.y -= 0.6; p.oldx = p.x - vx * 0.9; } }
                 for(let i=0; i<3; i++) { for(let s of this.sticks) s.update(); }
             }
             draw() {
@@ -372,50 +301,26 @@
             }
         }
 
-        // UTILITY FUNCTIONS
-        function addParticle(x, y, vx, vy, color, life, size, type, isEnemy = false, damage = 0) {
-            if (particles.length < MAX_PARTICLES) particles.push(new Particle(x, y, vx, vy, color, life, size, type, isEnemy, damage));
-        }
-
+        function addParticle(x, y, vx, vy, color, life, size, type, isEnemy = false, damage = 0) { if (particles.length < MAX_PARTICLES) particles.push(new Particle(x, y, vx, vy, color, life, size, type, isEnemy, damage)); }
         function createExplosion(x, y, amount, damageRadius = true, customDamage = 40) {
-            audioSystem.explosion();
-            const colors = ['#ff0000', '#ff4500', '#ffa500', '#ffff00', '#fff'];
+            audioSystem.explosion(); const colors = ['#ff0000', '#ff4500', '#ffa500', '#ffff00', '#fff'];
             for (let i = 0; i < amount; i++) addParticle(x, y, (Math.random() - 0.5)*15, (Math.random() - 0.5)*15, colors[Math.floor(Math.random()*colors.length)], Math.random()*25+10, Math.random()*8+2, 'explosion');
             if (damageRadius) { damageArea(x, y, customDamage); destroyTerrain(x, Math.min(80, amount * 2)); }
-            
-            for(let e of entities) {
-                if(e.side === 'civilian' && !e.dead && Math.hypot(e.x-x, e.y-y) < 400) { e.aiState = 'panic'; e.speak("AAAH!"); e.dir = e.x > x ? 1 : -1; }
-            }
+            for(let e of entities) { if(e.side === 'civilian' && !e.dead && Math.hypot(e.x-x, e.y-y) < 400) { e.aiState = 'panic'; e.speak("AAAH!"); e.dir = e.x > x ? 1 : -1; } }
         }
-
-        function createBlood(x, y, amount) {
-            for (let i = 0; i < amount; i++) addParticle(x, y, (Math.random() - 0.5)*6, (Math.random() - 1)*5, '#8b0000', Math.random()*80+40, Math.random()*4+2, 'blood');
-        }
+        function createBlood(x, y, amount) { for (let i = 0; i < amount; i++) addParticle(x, y, (Math.random() - 0.5)*6, (Math.random() - 1)*5, '#8b0000', Math.random()*80+40, Math.random()*4+2, 'blood'); }
 
         function damageArea(ex, ey, damage = 40) {
             for (let s of structures) {
                 if (s.destroyed) continue;
                 if (ex > s.x - 40 && ex < s.x + s.width + 40 && ey > s.y - 40 && ey < s.y + s.height + 40) {
                     s.health -= damage;
-                    if (s.type === 'tree') {
-                        for(let i=0; i<4; i++) addParticle(ex, ey, (Math.random()-0.5)*5, (Math.random()*-5)-2, '#2e8b57', 150, Math.random()*4+2, 'leaf');
-                        for(let i=0; i<2; i++) addParticle(ex, ey, (Math.random()-0.5)*8, (Math.random()*-8)-2, '#5c4033', 80, Math.random()*6+3, 'debris');
-                    } else if (s.type === 'outhouse') {
-                        for(let i=0; i<4; i++) addParticle(ex, ey, (Math.random()-0.5)*8, (Math.random()*-5)-2, '#0066cc', 80, Math.random()*6+2, 'debris');
-                        addParticle(ex, ey, (Math.random()-0.5)*5, (Math.random()*-5)-2, '#0cf', 40, 4, 'water');
-                    } else if (s.type !== 'trampoline') {
-                        for(let i=0; i<8; i++) addParticle(ex, ey, (Math.random()-0.5)*12, (Math.random()*-8)-2, '#555', 80, Math.random()*8+4, 'debris');
-                    }
-
+                    if (s.type === 'tree') { for(let i=0; i<4; i++) addParticle(ex, ey, (Math.random()-0.5)*5, (Math.random()*-5)-2, '#2e8b57', 150, Math.random()*4+2, 'leaf'); for(let i=0; i<2; i++) addParticle(ex, ey, (Math.random()-0.5)*8, (Math.random()*-8)-2, '#5c4033', 80, Math.random()*6+3, 'debris'); } else if (s.type === 'outhouse') { for(let i=0; i<4; i++) addParticle(ex, ey, (Math.random()-0.5)*8, (Math.random()*-5)-2, '#0066cc', 80, Math.random()*6+2, 'debris'); addParticle(ex, ey, (Math.random()-0.5)*5, (Math.random()*-5)-2, '#0cf', 40, 4, 'water'); } else if (s.type !== 'trampoline') { for(let i=0; i<8; i++) addParticle(ex, ey, (Math.random()-0.5)*12, (Math.random()*-8)-2, '#555', 80, Math.random()*8+4, 'debris'); }
                     if (s.health <= 0) { s.destroyed = true; for(let i=0; i<30; i++) addParticle(s.x + Math.random() * s.width, s.y + s.height, (Math.random()-0.5)*20, (Math.random()*-8), '#444', 60, Math.random()*15+10, 'dust'); }
                 }
             }
             for (let e of entities) {
-                if (!e.dead && Math.hypot(e.x + e.width/2 - ex, e.y + e.height/2 - ey) < 80) {
-                    let multiplier = e.cover ? 0.3 : 1; let prevHealth = e.health;
-                    e.health -= damage * multiplier;
-                    if(e.health <= 0 && prevHealth > 0 && e.width <= 15) { ragdolls.push(new Ragdoll(e.x+e.width/2, e.y, e.color, (ex - e.x)*0.1, (ey - e.y)*0.1)); }
-                }
+                if (!e.dead && Math.hypot(e.x + e.width/2 - ex, e.y + e.height/2 - ey) < 80) { let multiplier = e.cover ? 0.3 : 1; let prevHealth = e.health; e.health -= damage * multiplier; if(e.health <= 0 && prevHealth > 0 && e.width <= 15) { ragdolls.push(new Ragdoll(e.x+e.width/2, e.y, e.color, (ex - e.x)*0.1, (ey - e.y)*0.1)); } }
             }
         }
         
@@ -438,15 +343,10 @@
         function launchNuke() { let w = screenToWorld(canvas.width/2, 0); entities.push(new NukeMissile(w.x)); }
         function spawnTornado() { let w = screenToWorld(mouseX || canvas.width/2, 0); tornadoes.push({ x: w.x, vx: (Math.random()-0.5)*3, life: 800 }); }
 
-        function setSpawnSide(side) {
-            spawnSide = side;
-            document.querySelectorAll('.side-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + side).classList.add('active');
-        }
+        function setSpawnSide(side) { spawnSide = side; document.querySelectorAll('.side-btn:not(.lang-btn)').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-' + side).classList.add('active'); }
 
         function triggerBSOD() {
-            isBSOD = true;
-            document.getElementById('toolbar').style.display = 'none'; document.getElementById('ui-layer').style.display = 'none'; document.getElementById('mobile-menu-btn').style.display = 'none';
+            isBSOD = true; document.getElementById('toolbar').style.display = 'none'; document.getElementById('ui-layer').style.display = 'none'; document.getElementById('mobile-menu-btn').style.display = 'none';
             ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#0000aa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffffff'; ctx.font = '18px "Courier New", Courier, monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
             let lines = [ "A problem has been detected and the simulation has been shut down", "to prevent damage to your browser.", "", "ERR_UNEXPECTED_FLYING_CHAIR_EXCEPTION", "", "If this is the first time you've seen this Stop error screen,", "refresh your page. If this screen appears again, follow", "these steps:", "", "Check to make sure any new entities or furniture are properly coded.", "If problems continue, disable or remove any newly spawned chairs.", "Disable BIOS memory options such as caching or shadowing.", "", "Technical information:", "", "*** STOP: 0x000000FC (0x0000000000000000, 0x0000000000000001, 0xCHAIR000, 0x00)" ];
@@ -456,99 +356,47 @@
         function generateBackground() {
             bgElements = []; let currentX = -5000;
             while (currentX < 5000) {
-                if (currentMap.type === 'city') {
-                    let w = 60 + Math.random() * 100, h = 200 + Math.random() * 400;
-                    bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'building', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2, windows: true });
-                    currentX += w + (Math.random() * 20);
-                } else if (currentMap.type === 'ruins') {
-                    let w = 50 + Math.random() * 80, h = 100 + Math.random() * 250, jagged = [];
-                    for(let i=0; i<5; i++) jagged.push(Math.random() * 40);
-                    bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'ruin', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2, jagged: jagged });
-                    currentX += w + 10;
-                } else if (currentMap.type === 'alien') {
-                    let radius = 100 + Math.random() * 300;
-                    bgElements.push({ x: currentX, y: canvas.height - 80, r: radius, type: 'spike', color: currentMap.bg1 });
-                    currentX += radius * 0.5;
-                } else if (currentMap.type === 'forest') {
-                    let w = 20 + Math.random() * 20, h = 100 + Math.random() * 200;
-                    bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'bg_tree', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2 });
-                    currentX += w + (Math.random() * 50);
-                } else {
-                    let radius = 150 + Math.random() * 200;
-                    bgElements.push({ x: currentX, y: canvas.height - 80, r: radius, type: 'hill', color: currentMap.bg1 });
-                    currentX += radius * 0.8;
-                }
+                if (currentMap.type === 'city') { let w = 60 + Math.random() * 100, h = 200 + Math.random() * 400; bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'building', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2, windows: true }); currentX += w + (Math.random() * 20);
+                } else if (currentMap.type === 'ruins') { let w = 50 + Math.random() * 80, h = 100 + Math.random() * 250, jagged = []; for(let i=0; i<5; i++) jagged.push(Math.random() * 40); bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'ruin', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2, jagged: jagged }); currentX += w + 10;
+                } else if (currentMap.type === 'alien') { let radius = 100 + Math.random() * 300; bgElements.push({ x: currentX, y: canvas.height - 80, r: radius, type: 'spike', color: currentMap.bg1 }); currentX += radius * 0.5;
+                } else if (currentMap.type === 'forest') { let w = 20 + Math.random() * 20, h = 100 + Math.random() * 200; bgElements.push({ x: currentX, y: canvas.height - 100 - h, w: w, h: h, type: 'bg_tree', color: Math.random() > 0.5 ? currentMap.bg1 : currentMap.bg2 }); currentX += w + (Math.random() * 50);
+                } else { let radius = 150 + Math.random() * 200; bgElements.push({ x: currentX, y: canvas.height - 80, r: radius, type: 'hill', color: currentMap.bg1 }); currentX += radius * 0.8; }
             }
         }
 
         function drawParallaxBackground(darkness) {
-            ctx.save();
-            let bgWidth = 10000;
-            let parallaxX = (camera.x * 0.3);
-            let startOffset = Math.floor(parallaxX / bgWidth) * bgWidth;
-            ctx.translate(-parallaxX, 0); 
+            ctx.save(); let bgWidth = 10000; let parallaxX = (camera.x * 0.3); let startOffset = Math.floor(parallaxX / bgWidth) * bgWidth; ctx.translate(-parallaxX, 0); 
             for (let loop = -1; loop <= 1; loop++) {
-                ctx.save();
-                ctx.translate(startOffset + loop * bgWidth, 0);
+                ctx.save(); ctx.translate(startOffset + loop * bgWidth, 0);
                 for (let bg of bgElements) {
                     ctx.fillStyle = bg.color;
                     if (bg.type === 'hill') { ctx.beginPath(); ctx.arc(bg.x, bg.y, bg.r, Math.PI, 0); ctx.fill();
                     } else if (bg.type === 'spike') { ctx.beginPath(); ctx.moveTo(bg.x - bg.r/2, bg.y); ctx.lineTo(bg.x, bg.y - bg.r); ctx.lineTo(bg.x + bg.r/2, bg.y); ctx.fill();
-                    } else if (bg.type === 'bg_tree') { 
-                        ctx.fillRect(Math.trunc(bg.x), Math.trunc(bg.y), Math.trunc(bg.w), Math.trunc(bg.h));
-                        ctx.beginPath(); ctx.arc(bg.x + bg.w/2, bg.y, bg.w*1.5, 0, Math.PI*2); ctx.fill();
-                        ctx.beginPath(); ctx.arc(bg.x - bg.w*0.5, bg.y + bg.w, bg.w*1.2, 0, Math.PI*2); ctx.fill();
-                        ctx.beginPath(); ctx.arc(bg.x + bg.w*1.5, bg.y + bg.w, bg.w*1.2, 0, Math.PI*2); ctx.fill();
-                    } else if (bg.type === 'building') { ctx.fillRect(Math.trunc(bg.x), Math.trunc(bg.y), Math.trunc(bg.w), Math.trunc(bg.h));
-                        if (bg.windows && darkness > 0.3) { ctx.fillStyle = `rgba(255, 255, 150, ${(darkness - 0.3)})`;
-                            for(let wx = bg.x + 5; wx < bg.x + bg.w - 10; wx += 15) { for(let wy = bg.y + 10; wy < bg.y + bg.h - 20; wy += 20) if (Math.random() > 0.3) ctx.fillRect(wx, wy, 8, 12); }
-                        }
-                    } else if (bg.type === 'ruin') {
-                        ctx.beginPath(); ctx.moveTo(bg.x, bg.y + bg.h); ctx.lineTo(bg.x, bg.y + bg.jagged[0]); let step = bg.w / bg.jagged.length;
-                        for(let i=0; i<bg.jagged.length; i++) ctx.lineTo(bg.x + step*i, bg.y + bg.jagged[i]);
-                        ctx.lineTo(bg.x + bg.w, bg.y + bg.jagged[bg.jagged.length-1]); ctx.lineTo(bg.x + bg.w, bg.y + bg.h); ctx.fill();
-                    }
+                    } else if (bg.type === 'bg_tree') { ctx.fillRect(Math.trunc(bg.x), Math.trunc(bg.y), Math.trunc(bg.w), Math.trunc(bg.h)); ctx.beginPath(); ctx.arc(bg.x + bg.w/2, bg.y, bg.w*1.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(bg.x - bg.w*0.5, bg.y + bg.w, bg.w*1.2, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(bg.x + bg.w*1.5, bg.y + bg.w, bg.w*1.2, 0, Math.PI*2); ctx.fill();
+                    } else if (bg.type === 'building') { ctx.fillRect(Math.trunc(bg.x), Math.trunc(bg.y), Math.trunc(bg.w), Math.trunc(bg.h)); if (bg.windows && darkness > 0.3) { ctx.fillStyle = `rgba(255, 255, 150, ${(darkness - 0.3)})`; for(let wx = bg.x + 5; wx < bg.x + bg.w - 10; wx += 15) { for(let wy = bg.y + 10; wy < bg.y + bg.h - 20; wy += 20) if (Math.random() > 0.3) ctx.fillRect(wx, wy, 8, 12); } }
+                    } else if (bg.type === 'ruin') { ctx.beginPath(); ctx.moveTo(bg.x, bg.y + bg.h); ctx.lineTo(bg.x, bg.y + bg.jagged[0]); let step = bg.w / bg.jagged.length; for(let i=0; i<bg.jagged.length; i++) ctx.lineTo(bg.x + step*i, bg.y + bg.jagged[i]); ctx.lineTo(bg.x + bg.w, bg.y + bg.jagged[bg.jagged.length-1]); ctx.lineTo(bg.x + bg.w, bg.y + bg.h); ctx.fill(); }
                 }
                 ctx.restore();
             }
             ctx.restore();
         }
 
-        // --- INPUTS & TOUCH SUPPORT ---
         let currentTool = 'grab';
-        function setTool(toolName, btnElement) {
-            currentTool = toolName; document.querySelectorAll('.btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active');
-            if (window.innerWidth <= 768) toggleMenu();
-        }
+        function setTool(toolName, btnElement) { currentTool = toolName; document.querySelectorAll('.btn').forEach(b => b.classList.remove('active')); btnElement.classList.add('active'); if (window.innerWidth <= 768) toggleMenu(); }
 
         let mouseX = canvas.width/2, mouseY = canvas.height/2; 
         
         function handleInputStart(e, sx, sy) {
-            audioSystem.init(); audioSystem.resume(); 
-            isMouseDown = true;
-            mouseX = sx; mouseY = sy; let w = screenToWorld(sx, sy);
+            audioSystem.init(); audioSystem.resume(); isMouseDown = true; mouseX = sx; mouseY = sy; let w = screenToWorld(sx, sy);
             
             if (currentTool === 'grab') {
-                for (let i = entities.length - 1; i >= 0; i--) {
-                    let ent = entities[i];
-                    if (!ent.dead && w.x > ent.x && w.x < ent.x + ent.width && w.y > ent.y && w.y < ent.y + ent.height) { draggedObj = ent; return; }
-                }
-                for (let i = structures.length - 1; i >= 0; i--) {
-                    let s = structures[i];
-                    if (!s.destroyed && w.x > s.x && w.x < s.x + s.width && w.y > s.y && w.y < s.y + s.height) { draggedObj = s; s.isRipped = true; return; }
-                }
+                for (let i = entities.length - 1; i >= 0; i--) { let ent = entities[i]; if (!ent.dead && w.x > ent.x && w.x < ent.x + ent.width && w.y > ent.y && w.y < ent.y + ent.height) { draggedObj = ent; return; } }
+                for (let i = structures.length - 1; i >= 0; i--) { let s = structures[i]; if (!s.destroyed && w.x > s.x && w.x < s.x + s.width && w.y > s.y && w.y < s.y + s.height) { draggedObj = s; s.isRipped = true; return; } }
             } else if (currentTool === 'MindControl') {
-                for (let i = entities.length - 1; i >= 0; i--) {
-                    let ent = entities[i];
-                    if (!ent.dead && w.x > ent.x && w.x < ent.x + ent.width && w.y > ent.y && w.y < ent.y + ent.height) { 
-                        if(possessedEntity) possessedEntity.isPossessed = false;
-                        possessedEntity = ent; ent.isPossessed = true; return; 
-                    }
-                }
+                for (let i = entities.length - 1; i >= 0; i--) { let ent = entities[i]; if (!ent.dead && w.x > ent.x && w.x < ent.x + ent.width && w.y > ent.y && w.y < ent.y + ent.height) { if(possessedEntity) possessedEntity.isPossessed = false; possessedEntity = ent; ent.isPossessed = true; return; } }
             } else if (currentTool === 'AirStrike') {
-                for(let i=0; i<8; i++) {
-                    setTimeout(() => { addParticle(w.x + (i*60) - 200, camera.y - canvas.height/camera.zoom, 2, 8, '#222', 150, 8, 'bomb', false, 150); addParticle(w.x - (i*60) + 200, camera.y - canvas.height/camera.zoom - 50, -2, 8, '#222', 150, 8, 'bomb', false, 150); }, i * 200);
-                }
+                for(let i=0; i<8; i++) { setTimeout(() => { addParticle(w.x + (i*60) - 200, camera.y - canvas.height/camera.zoom, 2, 8, '#222', 150, 8, 'bomb', false, 150); addParticle(w.x - (i*60) + 200, camera.y - canvas.height/camera.zoom - 50, -2, 8, '#222', 150, 8, 'bomb', false, 150); }, i * 200); }
+            } else if (currentTool === 'Meteor') { addParticle(w.x, camera.y - canvas.height/camera.zoom - 300, (Math.random()-0.5)*5, 15, '#ff4500', 300, 25, 'bomb', false, 500); screenShake = 20;
             } else if (currentTool === 'Laser') { orbitalLasers.push({ x: w.x, life: 60, radius: 30 }); screenShake = 30;
             } else if (currentTool === 'BananaBomb') { addParticle(w.x, camera.y - canvas.height/camera.zoom, 0, 5, '#ff0', 200, 10, 'banana_cluster');
             } else spawnEntity(currentTool, w.x, w.y);
@@ -556,62 +404,31 @@
 
         canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); audioSystem.init(); audioSystem.resume(); let w = screenToWorld(e.clientX, e.clientY); createExplosion(w.x, w.y, 50, true, 200); });
         canvas.addEventListener('mousedown', (e) => { if (e.button === 0) handleInputStart(e, e.clientX, e.clientY); });
-        canvas.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX; mouseY = e.clientY; let w = screenToWorld(mouseX, mouseY);
-            if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; }
-        });
+        canvas.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; let w = screenToWorld(mouseX, mouseY); if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; } });
         canvas.addEventListener('mouseup', (e) => { if (e.button === 0) { isMouseDown = false; if(draggedObj) draggedObj = null; } });
 
-        // MOBILE MULTI-TOUCH
-        let lastTouchCenter = null;
-        let lastTouchDist = null;
-
+        let lastTouchCenter = null; let lastTouchDist = null;
         canvas.addEventListener('touchstart', (e) => { 
-            audioSystem.init(); audioSystem.resume();
-            isMouseDown = true;
+            audioSystem.init(); audioSystem.resume(); isMouseDown = true;
             if (e.touches.length === 2) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY;
-                lastTouchDist = Math.hypot(dx, dy);
-                lastTouchCenter = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
-                draggedObj = null; 
+                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY; lastTouchDist = Math.hypot(dx, dy); lastTouchCenter = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 }; draggedObj = null; 
             } else if (e.touches.length === 1) { 
-                lastTouchCenter = null; lastTouchDist = null;
-                if(mobilePanMode && !possessedEntity) {
-                    lastTouchCenter = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                } else {
-                    handleInputStart(e, e.touches[0].clientX, e.touches[0].clientY); 
-                }
+                lastTouchCenter = null; lastTouchDist = null; if(mobilePanMode && !possessedEntity) { lastTouchCenter = { x: e.touches[0].clientX, y: e.touches[0].clientY }; } else { handleInputStart(e, e.touches[0].clientX, e.touches[0].clientY); }
             }
         }, {passive: false});
 
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault(); 
             if (e.touches.length === 2 && lastTouchCenter && lastTouchDist) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY;
-                let dist = Math.hypot(dx, dy); let center = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
-
-                let zoomDelta = dist / lastTouchDist; camera.targetZoom *= zoomDelta; camera.targetZoom = Math.max(0.2, Math.min(camera.targetZoom, 3)); camera.zoom = camera.targetZoom; 
-                camera.x -= (center.x - lastTouchCenter.x) / camera.zoom; camera.y -= (center.y - lastTouchCenter.y) / camera.zoom;
-
-                lastTouchDist = dist; lastTouchCenter = center;
+                let dx = e.touches[0].clientX - e.touches[1].clientX; let dy = e.touches[0].clientY - e.touches[1].clientY; let dist = Math.hypot(dx, dy); let center = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+                let zoomDelta = dist / lastTouchDist; camera.targetZoom *= zoomDelta; camera.targetZoom = Math.max(0.2, Math.min(camera.targetZoom, 3)); camera.zoom = camera.targetZoom; camera.x -= (center.x - lastTouchCenter.x) / camera.zoom; camera.y -= (center.y - lastTouchCenter.y) / camera.zoom; lastTouchDist = dist; lastTouchCenter = center;
             } else if (e.touches.length === 1) {
                 mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; 
-                
-                if (mobilePanMode && !possessedEntity && lastTouchCenter) {
-                    camera.x -= (mouseX - lastTouchCenter.x) / camera.zoom;
-                    camera.y -= (mouseY - lastTouchCenter.y) / camera.zoom;
-                    lastTouchCenter = { x: mouseX, y: mouseY };
-                } else {
-                    let w = screenToWorld(mouseX, mouseY);
-                    if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; }
-                }
+                if (mobilePanMode && !possessedEntity && lastTouchCenter) { camera.x -= (mouseX - lastTouchCenter.x) / camera.zoom; camera.y -= (mouseY - lastTouchCenter.y) / camera.zoom; lastTouchCenter = { x: mouseX, y: mouseY }; } else { let w = screenToWorld(mouseX, mouseY); if (draggedObj) { draggedObj.x = w.x - draggedObj.width / 2; draggedObj.y = w.y - draggedObj.height / 2; draggedObj.vy = 0; } }
             }
         }, {passive: false});
 
-        canvas.addEventListener('touchend', (e) => { 
-            if (e.touches.length < 2) { lastTouchCenter = null; lastTouchDist = null; }
-            if (e.touches.length === 0) { isMouseDown = false; draggedObj = null; }
-        });
+        canvas.addEventListener('touchend', (e) => { if (e.touches.length < 2) { lastTouchCenter = null; lastTouchDist = null; } if (e.touches.length === 0) { isMouseDown = false; draggedObj = null; } });
 
         function spawnEntity(type, x, y) {
             let gy = getGroundY(x);
@@ -653,13 +470,7 @@
                 else if (type === 'UFO') ent = new UFO(spawnSide, x, y);
                 else if (type === 'Chair') { ent = new FlyingChair(); ent.x = x; ent.y = y; }
                 
-                if (ent) {
-                    if(ent.constructor.name !== 'FlyingChair') {
-                        ent.x = x - ent.width/2; ent.y = y - ent.height/2;
-                        if (!ent.isFlying && type !== 'Paratrooper' && y > gy - 50) ent.y = getGroundY(ent.x) - ent.height;
-                    }
-                    entities.push(ent);
-                }
+                if (ent) { if(ent.constructor.name !== 'FlyingChair') { ent.x = x - ent.width/2; ent.y = y - ent.height/2; if (!ent.isFlying && type !== 'Paratrooper' && y > gy - 50) ent.y = getGroundY(ent.x) - ent.height; } entities.push(ent); }
             }
         }
 
@@ -667,8 +478,7 @@
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             lightCanvas.width = canvas.width; lightCanvas.height = canvas.height;
             bloomCanvas.width = canvas.width; bloomCanvas.height = canvas.height;
-            ctx.imageSmoothingEnabled = false; 
-            camera.x = canvas.width/2; 
+            ctx.imageSmoothingEnabled = false; camera.x = canvas.width/2; 
             if(structures.length === 0) generateBattlefield();
             if(globalWaterLevel === 1000) globalWaterLevel = canvas.height - 20; 
             generateBackground();
@@ -678,8 +488,7 @@
             structures.length = 0; let currentX = window.innerWidth > 768 ? 280 : 20; 
             while (currentX < canvas.width - 100) {
                 if (Math.random() < 0.6) {
-                    let types = ['trench', 'bunker', 'watchtower', 'barbed_wire', 'mine'];
-                    let type = types[Math.floor(Math.random() * types.length)];
+                    let types = ['trench', 'bunker', 'watchtower', 'barbed_wire', 'mine']; let type = types[Math.floor(Math.random() * types.length)];
                     let width = type === 'trench' || type === 'barbed_wire' ? 80 + Math.random() * 100 : (type === 'watchtower' ? 40 : (type === 'mine' ? 20 : 60));
                     let height = type === 'trench' || type === 'barbed_wire' ? 20 : (type === 'watchtower' ? 120 : (type === 'mine' ? 5 : 50));
                     structures.push(new Structure(currentX, getGroundY(currentX) - (type==='bunker'||type==='watchtower'?height:0), width, height, type));
@@ -688,26 +497,15 @@
             }
         }
 
-        function interpolateColor(color1, color2, factor) {
-            let result = color1.slice(); for (let i = 0; i < 3; i++) result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
-            return `rgb(${result[0]}, ${result[1]}, ${result[2]})`;
-        }
+        function interpolateColor(color1, color2, factor) { let result = color1.slice(); for (let i = 0; i < 3; i++) result[i] = Math.round(result[i] + factor * (color2[i] - color1[i])); return `rgb(${result[0]}, ${result[1]}, ${result[2]})`; }
 
         function updateTime() {
             gameTime += 0.000333; if (gameTime >= 24) { gameTime = 0; dayCount++; }
             let hours = Math.floor(gameTime), mins = Math.floor((gameTime - hours) * 60).toString().padStart(2, '0');
             document.getElementById('time-display').innerText = `Day ${dayCount} | ${hours.toString().padStart(2, '0')}:${mins}`;
-            
             document.getElementById('wind-display').innerText = Math.round(globalWind * 10); 
-            
             let allies = 0, enemies = 0, civs = 0;
-            for(let e of entities) { 
-                if(!e.dead && e.constructor.name !== 'FlyingChair' && e.constructor.name !== 'NukeMissile') { 
-                    if(e.side === 'civilian') civs++;
-                    else if(e.isEnemy) enemies++; 
-                    else allies++; 
-                } 
-            }
+            for(let e of entities) { if(!e.dead && e.constructor.name !== 'FlyingChair' && e.constructor.name !== 'NukeMissile') { if(e.side === 'civilian') civs++; else if(e.isEnemy) enemies++; else allies++; } }
             document.getElementById('count-ally').innerText = allies; document.getElementById('count-enemy').innerText = enemies; document.getElementById('count-civ').innerText = civs;
         }
 
@@ -725,7 +523,6 @@
             }
             
             if(isDisco && gameTime % 0.1 < 0.05) skyColor = `hsl(${Date.now() % 360}, 100%, 50%)`;
-
             ctx.fillStyle = skyColor; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             if (currentWeather === 'thunderstorm') {
@@ -740,14 +537,11 @@
 
             if (ambientDarkness > 0.3 && currentWeather === 'clear' && currentMap.type !== 'alien' && !isDisco) {
                 ctx.fillStyle = '#fff';
-                for (let s of stars) { s.blinkTimer--; if (s.blinkTimer <= 0) { s.size = Math.random() * 1.5 + 0.5; s.blinkTimer = Math.random() * 100; }
-                    ctx.globalAlpha = (ambientDarkness - 0.3) / 0.5; ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); }
+                for (let s of stars) { s.blinkTimer--; if (s.blinkTimer <= 0) { s.size = Math.random() * 1.5 + 0.5; s.blinkTimer = Math.random() * 100; } ctx.globalAlpha = (ambientDarkness - 0.3) / 0.5; ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); }
                 ctx.globalAlpha = 1;
             }
 
-            if (currentMap.type === 'alien') {
-                ctx.fillStyle = '#ff8855'; ctx.beginPath(); ctx.arc(canvas.width*0.7, canvas.height*0.3, 40, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#aa4422'; ctx.beginPath(); ctx.arc(canvas.width*0.8, canvas.height*0.4, 20, 0, Math.PI*2); ctx.fill();
+            if (currentMap.type === 'alien') { ctx.fillStyle = '#ff8855'; ctx.beginPath(); ctx.arc(canvas.width*0.7, canvas.height*0.3, 40, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#aa4422'; ctx.beginPath(); ctx.arc(canvas.width*0.8, canvas.height*0.4, 20, 0, Math.PI*2); ctx.fill();
             } else if (currentWeather !== 'thunderstorm') {
                 if (gameTime > 5 && gameTime < 19) { sunY = canvas.height - 100 - Math.sin(((gameTime - 5) / 14) * Math.PI) * (canvas.height - 200); ctx.fillStyle = '#ffdf00'; ctx.beginPath(); ctx.arc(sunX, sunY, 40, 0, Math.PI*2); ctx.fill();
                 } else { let moonY = canvas.height - 100 - Math.sin(((gameTime < 6 ? gameTime+18 : gameTime-6) / 24) * Math.PI) * (canvas.height - 150); ctx.fillStyle = '#f0f4f8'; ctx.beginPath(); ctx.arc(moonX, moonY, 30, 0, Math.PI*2); ctx.fill(); }
@@ -756,43 +550,23 @@
         }
 
         class Particle {
-            constructor(x, y, vx, vy, color, life, size, type = 'normal', isEnemy = false, damage = 0) {
-                this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = color; this.life = life; this.maxLife = life;
-                this.size = size; this.type = type; this.isEnemy = isEnemy; this.damage = damage;
-            }
+            constructor(x, y, vx, vy, color, life, size, type = 'normal', isEnemy = false, damage = 0) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = color; this.life = life; this.maxLife = life; this.size = size; this.type = type; this.isEnemy = isEnemy; this.damage = damage; }
             update() {
                 this.x += this.vx; this.y += this.vy;
-                
-                if (this.type === 'weather' || this.type === 'dust' || this.type === 'smoke' || this.type === 'blood' || this.type === 'leaf') {
-                    this.x += globalWind * (this.type === 'weather' ? 0.8 : 0.3);
-                }
-
+                if (this.type === 'weather' || this.type === 'dust' || this.type === 'smoke' || this.type === 'blood' || this.type === 'leaf') { this.x += globalWind * (this.type === 'weather' ? 0.8 : 0.3); }
                 if (this.type === 'debris' || this.type === 'bomb' || this.type === 'blood' || this.type === 'casing' || this.type === 'artillery_shell' || this.type === 'arrow' || this.type === 'banana_cluster' || this.type === 'banana_bomb') { this.vy += 0.2; } 
-                else if (this.type === 'dust' || this.type === 'heal' || this.type === 'flame') {
-                    if (this.type === 'flame') { this.vy -= 0.1; this.vx *= 0.95; this.size += 0.2; } else { this.vy -= 0.05; this.size += (this.type === 'dust') ? 0.1 : 0; }
-                } else if (this.type === 'rocket' || this.type === 'flak') { if(Math.random() < 0.5) addParticle(this.x, this.y, (Math.random()-0.5)*2, (Math.random()-0.5)*2, '#ffa500', 10, 3, 'dust');
-                } else if (this.type === 'artillery_shell') { if(Math.random() < 0.3) addParticle(this.x, this.y, 0, 0, '#555', 20, 4, 'dust');
-                } else if (this.type === 'weather') { if (currentWeather === 'rain' || currentWeather === 'thunderstorm') { this.vy += 0.5; } else if (currentWeather === 'snow') { this.vy += 0.05; this.x += Math.sin(Date.now()/500)*0.5; }
-                } else if (this.type === 'wool') { this.vx = 0; this.vy = 0; 
-                } else if (this.type === 'leaf') { this.vy += 0.05; this.vx += Math.sin(Date.now()/200 + this.x) * 0.1; }
+                else if (this.type === 'dust' || this.type === 'heal' || this.type === 'flame') { if (this.type === 'flame') { this.vy -= 0.1; this.vx *= 0.95; this.size += 0.2; } else { this.vy -= 0.05; this.size += (this.type === 'dust') ? 0.1 : 0; } }
+                else if (this.type === 'rocket' || this.type === 'flak') { if(Math.random() < 0.5) addParticle(this.x, this.y, (Math.random()-0.5)*2, (Math.random()-0.5)*2, '#ffa500', 10, 3, 'dust'); }
+                else if (this.type === 'artillery_shell') { if(Math.random() < 0.3) addParticle(this.x, this.y, 0, 0, '#555', 20, 4, 'dust'); }
+                else if (this.type === 'weather') { if (currentWeather === 'rain' || currentWeather === 'thunderstorm') { this.vy += 0.5; } else if (currentWeather === 'snow') { this.vy += 0.05; this.x += Math.sin(Date.now()/500)*0.5; } }
+                else if (this.type === 'wool') { this.vx = 0; this.vy = 0; }
+                else if (this.type === 'leaf') { this.vy += 0.05; this.vx += Math.sin(Date.now()/200 + this.x) * 0.1; }
 
                 let gy = getGroundY(this.x);
                 if ((this.type === 'debris' || this.type === 'blood' || this.type === 'casing' || this.type === 'arrow' || this.type === 'leaf') && this.y >= gy - this.size) { this.y = gy - this.size; this.vy *= -0.4; this.vx *= 0.7; }
-                
-                if (this.type === 'banana_cluster' && this.y >= gy) {
-                    createExplosion(this.x, this.y, 10, false, 0);
-                    for(let i=0; i<5; i++) addParticle(this.x, this.y, (Math.random()-0.5)*15, -Math.random()*15, '#ff0', 150, 6, 'banana_bomb', false, 100);
-                    this.life = 0;
-                }
-                if (this.type === 'banana_bomb' && this.y >= gy) {
-                    createExplosion(this.x, this.y, 25, true, 80); this.life = 0;
-                }
-
-                if ((this.type === 'bomb' || this.type === 'debris' || this.type === 'leaf' || this.type === 'banana_bomb') && this.y > globalWaterLevel && this.y - this.vy <= globalWaterLevel) {
-                    audioSystem.splash();
-                    for(let i=0; i<5; i++) addParticle(this.x, globalWaterLevel, (Math.random()-0.5)*4, -Math.random()*4, '#0cf', 30, 3, 'water');
-                }
-
+                if (this.type === 'banana_cluster' && this.y >= gy) { createExplosion(this.x, this.y, 10, false, 0); for(let i=0; i<5; i++) addParticle(this.x, this.y, (Math.random()-0.5)*15, -Math.random()*15, '#ff0', 150, 6, 'banana_bomb', false, 100); this.life = 0; }
+                if (this.type === 'banana_bomb' && this.y >= gy) { createExplosion(this.x, this.y, 25, true, 80); this.life = 0; }
+                if ((this.type === 'bomb' || this.type === 'debris' || this.type === 'leaf' || this.type === 'banana_bomb') && this.y > globalWaterLevel && this.y - this.vy <= globalWaterLevel) { audioSystem.splash(); for(let i=0; i<5; i++) addParticle(this.x, globalWaterLevel, (Math.random()-0.5)*4, -Math.random()*4, '#0cf', 30, 3, 'water'); }
                 if (this.type === 'weather' && (this.y >= gy || this.y >= globalWaterLevel)) { this.life = 0; }
                 if (this.type === 'flak' && this.life < 5) { createExplosion(this.x, this.y, 10, true, 20); this.life = 0; }
                 this.life--;
@@ -803,9 +577,7 @@
                 if (this.type === 'heal') { context.fillRect(Math.trunc(this.x) + 2, Math.trunc(this.y), 2, 6); context.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 2, 6, 2);
                 } else if (this.type === 'weather' && (currentWeather === 'rain' || currentWeather === 'thunderstorm')) { context.fillRect(Math.trunc(this.x), Math.trunc(this.y), 1, 10);
                 } else if (this.type === 'arrow') { context.save(); context.translate(this.x, this.y); context.rotate(Math.atan2(this.vy, this.vx)); context.fillRect(0, 0, 12, 2); context.restore();
-                } else if (this.type === 'banana_cluster' || this.type === 'banana_bomb') {
-                    context.save(); context.translate(this.x, this.y); context.rotate(Date.now() / 100); 
-                    context.beginPath(); context.arc(0, 0, this.size, 0, Math.PI, false); context.fill(); context.restore();
+                } else if (this.type === 'banana_cluster' || this.type === 'banana_bomb') { context.save(); context.translate(this.x, this.y); context.rotate(Date.now() / 100); context.beginPath(); context.arc(0, 0, this.size, 0, Math.PI, false); context.fill(); context.restore();
                 } else { context.fillRect(Math.trunc(this.x), Math.trunc(this.y), Math.trunc(this.size), Math.trunc(this.size)); }
                 context.globalAlpha = 1.0;
             }
@@ -820,74 +592,23 @@
             }
             draw() {
                 if (this.destroyed) return;
-                
                 let gyAtStruct = getGroundY(this.x + this.width/2);
-                if (this.isRipped && draggedObj !== this) {
-                    this.vy += 0.8; this.y += this.vy;
-                    if (this.y >= gyAtStruct - this.height) {
-                        this.y = gyAtStruct - this.height; this.isRipped = false;
-                        if (this.vy > 5 && this.type !== 'mine') { this.health -= this.vy * 20; createExplosion(this.x + this.width/2, this.y + this.height, 40, true, this.vy * 10); }
-                        this.vy = 0;
-                    }
-                } else if (!this.isRipped && draggedObj !== this) {
-                    if (this.y < gyAtStruct - this.height) { this.vy += 0.5; this.y += this.vy; if(this.y >= gyAtStruct - this.height) { this.y = gyAtStruct - this.height; this.vy = 0; } }
-                }
+                if (this.isRipped && draggedObj !== this) { this.vy += 0.8; this.y += this.vy; if (this.y >= gyAtStruct - this.height) { this.y = gyAtStruct - this.height; this.isRipped = false; if (this.vy > 5 && this.type !== 'mine') { this.health -= this.vy * 20; createExplosion(this.x + this.width/2, this.y + this.height, 40, true, this.vy * 10); } this.vy = 0; }
+                } else if (!this.isRipped && draggedObj !== this) { if (this.y < gyAtStruct - this.height) { this.vy += 0.5; this.y += this.vy; if(this.y >= gyAtStruct - this.height) { this.y = gyAtStruct - this.height; this.vy = 0; } } }
 
-                if (this.type === 'building') {
-                    ctx.fillStyle = currentMap.type === 'city' ? currentMap.bg1 : '#556'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#112';
-                    for(let wx = this.x + 10; wx < this.x + this.width - 15; wx += 20) { for(let wy = this.y + 10; wy < this.y + this.height - 20; wy += 25) ctx.fillRect(wx, wy, 10, 15); }
-                } else if (this.type === 'tree') {
-                    ctx.fillStyle = '#5c4033'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                    ctx.fillStyle = '#2e8b57'; ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y, 30, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(this.x + this.width/2 - 15, this.y + 15, 25, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(this.x + this.width/2 + 15, this.y + 15, 25, 0, Math.PI*2); ctx.fill();
-                } else if (this.type === 'outhouse') {
-                    ctx.fillStyle = '#0066cc'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                    ctx.fillStyle = '#eee'; ctx.fillRect(Math.trunc(this.x)-2, Math.trunc(this.y)-5, this.width+4, 5);
-                    ctx.fillStyle = '#111'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y)+10, this.width-10, this.height-10);
-                    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y + 20, 4, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(this.x + this.width/2 + 2, this.y + 19, 4, 0, Math.PI*2); ctx.fill();
-                    if (Math.random() < 0.005) { for (let e of entities) { if(Math.abs(e.x - this.x) < 50) { audioSystem.fart(); break; } } }
-                } else if (this.type === 'trampoline') {
-                    ctx.fillStyle = '#aa0'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                    ctx.fillStyle = '#333'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y), this.width-10, 4);
+                if (this.type === 'building') { ctx.fillStyle = currentMap.type === 'city' ? currentMap.bg1 : '#556'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#112'; for(let wx = this.x + 10; wx < this.x + this.width - 15; wx += 20) { for(let wy = this.y + 10; wy < this.y + this.height - 20; wy += 25) ctx.fillRect(wx, wy, 10, 15); }
+                } else if (this.type === 'tree') { ctx.fillStyle = '#5c4033'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#2e8b57'; ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y, 30, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x + this.width/2 - 15, this.y + 15, 25, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x + this.width/2 + 15, this.y + 15, 25, 0, Math.PI*2); ctx.fill();
+                } else if (this.type === 'outhouse') { ctx.fillStyle = '#0066cc'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#eee'; ctx.fillRect(Math.trunc(this.x)-2, Math.trunc(this.y)-5, this.width+4, 5); ctx.fillStyle = '#111'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y)+10, this.width-10, this.height-10); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y + 20, 4, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(this.x + this.width/2 + 2, this.y + 19, 4, 0, Math.PI*2); ctx.fill(); if (Math.random() < 0.005) { for (let e of entities) { if(Math.abs(e.x - this.x) < 50) { audioSystem.fart(); break; } } }
+                } else if (this.type === 'trampoline') { ctx.fillStyle = '#aa0'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#333'; ctx.fillRect(Math.trunc(this.x)+5, Math.trunc(this.y), this.width-10, 4);
                 } else if (this.type === 'bunker') { ctx.fillStyle = currentMap.bunker; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#111'; ctx.fillRect(Math.trunc(this.x) + 5, Math.trunc(this.y) + 10, this.width - 10, 5);
                 } else if (this.type === 'trench') { ctx.fillStyle = currentMap.trench; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = currentMap.sandbag; ctx.fillRect(Math.trunc(this.x)-10, Math.trunc(this.y)-5, 15, 10); ctx.fillRect(Math.trunc(this.x)+this.width-5, Math.trunc(this.y)-5, 15, 10);
                 } else if (this.type === 'sandbag') { ctx.fillStyle = currentMap.sandbag; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.strokeStyle = '#222'; ctx.strokeRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                } else if (this.type === 'watchtower') {
-                    ctx.fillStyle = '#4a3b2c'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), 5, this.height); ctx.fillRect(Math.trunc(this.x) + this.width - 5, Math.trunc(this.y), 5, this.height);
-                    ctx.fillRect(Math.trunc(this.x) - 5, Math.trunc(this.y), this.width + 10, 15);
-                    ctx.beginPath(); ctx.moveTo(this.x - 10, this.y - 15); ctx.lineTo(this.x + this.width + 10, this.y - 15); ctx.lineTo(this.x + this.width/2, this.y - 35); ctx.fill();
-                } else if (this.type === 'barbed_wire') {
-                    ctx.strokeStyle = '#666'; ctx.lineWidth=2; for (let i = 0; i < this.width; i+=20) { ctx.beginPath(); ctx.arc(this.x + i + 10, this.y + 10, 10, 0, Math.PI, true); ctx.stroke(); ctx.fillRect(this.x + i + 8, this.y + 5, 4, 15); }
+                } else if (this.type === 'watchtower') { ctx.fillStyle = '#4a3b2c'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), 5, this.height); ctx.fillRect(Math.trunc(this.x) + this.width - 5, Math.trunc(this.y), 5, this.height); ctx.fillRect(Math.trunc(this.x) - 5, Math.trunc(this.y), this.width + 10, 15); ctx.beginPath(); ctx.moveTo(this.x - 10, this.y - 15); ctx.lineTo(this.x + this.width + 10, this.y - 15); ctx.lineTo(this.x + this.width/2, this.y - 35); ctx.fill();
+                } else if (this.type === 'barbed_wire') { ctx.strokeStyle = '#666'; ctx.lineWidth=2; for (let i = 0; i < this.width; i+=20) { ctx.beginPath(); ctx.arc(this.x + i + 10, this.y + 10, 10, 0, Math.PI, true); ctx.stroke(); ctx.fillRect(this.x + i + 8, this.y + 5, 4, 15); }
                 } else if (this.type === 'mine') { ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(this.x + 10, this.y + 5, 5, Math.PI, 0); ctx.fill(); ctx.fillStyle = '#f00'; ctx.fillRect(this.x + 9, this.y, 2, 2);
-                } else if (this.type === 'artillery') {
-                    ctx.fillStyle = '#2f4f4f'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 20, this.width, 20); ctx.fillStyle = '#111'; ctx.save(); ctx.translate(this.x + 30, this.y + 20); ctx.rotate(this.dir === 1 ? -Math.PI/4 : Math.PI*1.25); ctx.fillRect(0, -5, 50, 10); ctx.restore();
-                    if (!this.isRipped) {
-                        this.shootTimer--;
-                        if (this.shootTimer <= 0) { audioSystem.heavyShoot(); addParticle(this.x + 30 + (this.dir*35), this.y, this.dir * (Math.random()*5 + 8), -(Math.random()*5 + 10), '#333', 150, 8, 'artillery_shell', false, 0); createExplosion(this.x + 30 + (this.dir*35), this.y, 15, false); this.shootTimer = Math.random() * 300 + 200; }
-                    }
-                } else if (this.type === 'aa_gun') {
-                    ctx.fillStyle = '#445544'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 15, this.width, 15); ctx.fillStyle = '#111'; ctx.save(); ctx.translate(this.x + 20, this.y + 15); ctx.rotate(-Math.PI/2); ctx.fillRect(0, -3, 30, 6); ctx.restore();
-                    if (!this.isRipped) {
-                        let targetFound = false; for (let e of entities) if (!e.dead && (e.isFlying || e.isParachuting) && Math.abs(e.x - this.x) < 300) { targetFound = true; break; }
-                        if (targetFound) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); addParticle(this.x + 20, this.y - 10, (Math.random()-0.5)*4, -12, '#ffaa00', 40, 4, 'flak', false, 20); this.shootTimer = 10; } }
-                    }
-                } else if (this.type === 'tesla') {
-                    ctx.fillStyle = '#667'; ctx.fillRect(Math.trunc(this.x)+10, Math.trunc(this.y)+20, 10, 40); ctx.fillStyle = '#0ff'; ctx.shadowBlur = 15; ctx.shadowColor = '#0ff'; ctx.beginPath(); ctx.arc(this.x+15, this.y+15, 15, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-                    bloomCtx.fillStyle = '#0ff'; bloomCtx.beginPath(); bloomCtx.arc(this.x+15, this.y+15, 15, 0, Math.PI*2); bloomCtx.fill();
-                    if (!this.isRipped) {
-                        this.shootTimer--;
-                        if (this.shootTimer <= 0) {
-                            for (let e of entities) {
-                                if (!e.dead && Math.hypot(e.x - this.x, e.y - this.y) < 200) {
-                                    audioSystem.playTone(800, 'sawtooth', 0.1, 0.1, 400);
-                                    lightningBolts.push({ path: generateLightningPath(this.x+15, this.y+15, e.x+e.width/2, e.y+e.height/2, 8, 20), life: 10, color: '#0ff', maxThickness: 3 });
-                                    e.health -= 15; this.shootTimer = 20; break;
-                                }
-                            }
-                        }
-                    }
+                } else if (this.type === 'artillery') { ctx.fillStyle = '#2f4f4f'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 20, this.width, 20); ctx.fillStyle = '#111'; ctx.save(); ctx.translate(this.x + 30, this.y + 20); ctx.rotate(this.dir === 1 ? -Math.PI/4 : Math.PI*1.25); ctx.fillRect(0, -5, 50, 10); ctx.restore(); if (!this.isRipped) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); addParticle(this.x + 30 + (this.dir*35), this.y, this.dir * (Math.random()*5 + 8), -(Math.random()*5 + 10), '#333', 150, 8, 'artillery_shell', false, 0); createExplosion(this.x + 30 + (this.dir*35), this.y, 15, false); this.shootTimer = Math.random() * 300 + 200; } }
+                } else if (this.type === 'aa_gun') { ctx.fillStyle = '#445544'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 15, this.width, 15); ctx.fillStyle = '#111'; ctx.save(); ctx.translate(this.x + 20, this.y + 15); ctx.rotate(-Math.PI/2); ctx.fillRect(0, -3, 30, 6); ctx.restore(); if (!this.isRipped) { let targetFound = false; for (let e of entities) if (!e.dead && (e.isFlying || e.isParachuting) && Math.abs(e.x - this.x) < 300) { targetFound = true; break; } if (targetFound) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); addParticle(this.x + 20, this.y - 10, (Math.random()-0.5)*4, -12, '#ffaa00', 40, 4, 'flak', false, 20); this.shootTimer = 10; } } }
+                } else if (this.type === 'tesla') { ctx.fillStyle = '#667'; ctx.fillRect(Math.trunc(this.x)+10, Math.trunc(this.y)+20, 10, 40); ctx.fillStyle = '#0ff'; ctx.shadowBlur = 15; ctx.shadowColor = '#0ff'; ctx.beginPath(); ctx.arc(this.x+15, this.y+15, 15, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0; bloomCtx.fillStyle = '#0ff'; bloomCtx.beginPath(); bloomCtx.arc(this.x+15, this.y+15, 15, 0, Math.PI*2); bloomCtx.fill(); if (!this.isRipped) { this.shootTimer--; if (this.shootTimer <= 0) { for (let e of entities) { if (!e.dead && Math.hypot(e.x - this.x, e.y - this.y) < 200) { audioSystem.playTone(800, 'sawtooth', 0.1, 0.1, 400); lightningBolts.push({ path: generateLightningPath(this.x+15, this.y+15, e.x+e.width/2, e.y+e.height/2, 8, 20), life: 10, color: '#0ff', maxThickness: 3 }); e.health -= 15; this.shootTimer = 20; break; } } } }
                 }
             }
         }
@@ -895,330 +616,128 @@
         class Entity {
             constructor(side = null, x=null, y=null) {
                 this.side = side || (Math.random() > 0.5 ? 'ally' : 'enemy');
-                if(this.side === 'ally') { this.dir = 1; this.isEnemy = false; }
-                else if (this.side === 'enemy') { this.dir = -1; this.isEnemy = true; }
-                else { this.dir = Math.random() > 0.5 ? 1 : -1; this.isEnemy = false; } 
-                
-                this.gender = Math.random() > 0.5 ? 'm' : 'f';
-
-                this.width=10; this.height=20; this.dead = false; this.aiState = 'patrol'; this.vy = 0; this.isFlying = false; this.target = null; this.cover = null;
-                this.isPossessed = false;
-
-                this.aiTimer = Math.random() * 100;
-                this.dialogue = null;
-                this.dialogueTimer = 0;
-
-                if (x !== null) { this.x = x; } else { this.x = camera.x + (this.dir === 1 ? -canvas.width/camera.zoom : canvas.width/camera.zoom); }
-                this.y = y || 0;
+                if(this.side === 'ally') { this.dir = 1; this.isEnemy = false; } else if (this.side === 'enemy') { this.dir = -1; this.isEnemy = true; } else { this.dir = Math.random() > 0.5 ? 1 : -1; this.isEnemy = false; } 
+                this.gender = Math.random() > 0.5 ? 'm' : 'f'; this.width=10; this.height=20; this.dead = false; this.aiState = 'patrol'; this.vy = 0; this.isFlying = false; this.target = null; this.cover = null; this.isPossessed = false; this.aiTimer = Math.random() * 100; this.dialogue = null; this.dialogueTimer = 0;
+                if (x !== null) { this.x = x; } else { this.x = camera.x + (this.dir === 1 ? -canvas.width/camera.zoom : canvas.width/camera.zoom); } this.y = y || 0;
             }
-            speak(text) { 
-                this.dialogue = text; this.dialogueTimer = 150; 
-                audioSystem.playTone(this.gender === 'f' ? 600 : 400, 'sine', 0.05, 0.02); 
-            }
-            drawDialogue() {
-                if (this.dialogue && this.dialogueTimer > 0) {
-                    this.dialogueTimer--;
-                    ctx.save(); ctx.translate(this.x + this.width/2, this.y - 15 - (150 - this.dialogueTimer)*0.1);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, this.dialogueTimer / 30)})`;
-                    ctx.font = "bold 12px monospace"; ctx.textAlign = "center"; ctx.shadowColor = "black"; ctx.shadowBlur = 4;
-                    ctx.fillText(this.dialogue, 0, 0); ctx.restore();
-                }
-            }
+            speak(text) { this.dialogue = text; this.dialogueTimer = 150; audioSystem.playTone(this.gender === 'f' ? 600 : 400, 'sine', 0.05, 0.02); }
+            drawDialogue() { if (this.dialogue && this.dialogueTimer > 0) { this.dialogueTimer--; ctx.save(); ctx.translate(this.x + this.width/2, this.y - 15 - (150 - this.dialogueTimer)*0.1); ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, this.dialogueTimer / 30)})`; ctx.font = "bold 12px monospace"; ctx.textAlign = "center"; ctx.shadowColor = "black"; ctx.shadowBlur = 4; ctx.fillText(this.dialogue, 0, 0); ctx.restore(); } }
             scanForTarget(range, healMode = false) {
-                this.target = null; let bestDist = range;
-                if (this.cover && this.cover.type === 'watchtower') bestDist *= 1.8;
-                for (let e of entities) {
-                    if (e.side === 'civilian' || this.side === 'civilian') continue; 
-                    if (healMode) {
-                        if (e.side === this.side && !e.dead && e.health < e.maxHealth) { let dist = Math.hypot(e.x - this.x, e.y - this.y); if (dist < bestDist) { this.target = e; bestDist = dist; } }
-                    } else {
-                        if (e.side !== this.side && !e.dead && e.constructor.name !== 'FlyingChair') {
-                            let dist = Math.hypot(e.x - this.x, e.y - this.y); if (dist < bestDist && ((e.x - this.x) * this.dir > 0 || this.isFlying || this.isParachuting)) { this.target = e; bestDist = dist; }
-                        }
-                    }
-                }
-                return this.target !== null;
+                this.target = null; let bestDist = range; if (this.cover && this.cover.type === 'watchtower') bestDist *= 1.8;
+                for (let e of entities) { if (e.side === 'civilian' || this.side === 'civilian') continue; 
+                    if (healMode) { if (e.side === this.side && !e.dead && e.health < e.maxHealth) { let dist = Math.hypot(e.x - this.x, e.y - this.y); if (dist < bestDist) { this.target = e; bestDist = dist; } }
+                    } else { if (e.side !== this.side && !e.dead && e.constructor.name !== 'FlyingChair') { let dist = Math.hypot(e.x - this.x, e.y - this.y); if (dist < bestDist && ((e.x - this.x) * this.dir > 0 || this.isFlying || this.isParachuting)) { this.target = e; bestDist = dist; } } }
+                } return this.target !== null;
             }
             checkCover() {
-                this.cover = null;
-                let foundBunker = null; let minBunkerDist = 500;
-
+                this.cover = null; let foundBunker = null; let minBunkerDist = 500;
                 for (let s of structures) {
                     let gyAtStruct = getGroundY(s.x + s.width/2);
-                    
-                    if (s.type === 'trampoline' && Math.abs(this.x + this.width/2 - (s.x + s.width/2)) < s.width/2 + 5 && this.y >= gyAtStruct - this.height - 20) {
-                        this.vy = -15; 
-                    }
-
+                    if (s.type === 'trampoline' && Math.abs(this.x + this.width/2 - (s.x + s.width/2)) < s.width/2 + 5 && this.y >= gyAtStruct - this.height - 20) { this.vy = -15; }
                     if (!s.destroyed && s.type === 'mine' && this.y >= gyAtStruct - this.height - 5 && Math.abs(this.x + this.width/2 - (s.x + 10)) < 15) { s.destroyed = true; createExplosion(s.x + 10, s.y, 40, true, 200); }
-                    
-                    if (!s.destroyed && this.x > s.x && this.x < s.x + s.width && this.y >= gyAtStruct - s.height - 20) { 
-                        this.cover = s; 
-                        if (s.type === 'barbed_wire' && (this.aiState === 'patrol' || this.aiState === 'panic')) { this.vx *= 0.3; if (Math.random() < 0.05) this.health -= 1; } 
-                        return; 
-                    }
-
-                    if (this.aiState === 'panic' && !s.destroyed && (s.type === 'bunker' || s.type === 'trench' || s.type === 'outhouse')) {
-                        let d = Math.abs(s.x - this.x);
-                        if (d < minBunkerDist) { minBunkerDist = d; foundBunker = s; }
-                    }
+                    if (!s.destroyed && this.x > s.x && this.x < s.x + s.width && this.y >= gyAtStruct - s.height - 20) { this.cover = s; if (s.type === 'barbed_wire' && (this.aiState === 'patrol' || this.aiState === 'panic')) { this.vx *= 0.3; if (Math.random() < 0.05) this.health -= 1; } return; }
+                    if (this.aiState === 'panic' && !s.destroyed && (s.type === 'bunker' || s.type === 'trench' || s.type === 'outhouse')) { let d = Math.abs(s.x - this.x); if (d < minBunkerDist) { minBunkerDist = d; foundBunker = s; } }
                 }
-
-                if (this.aiState === 'panic' && foundBunker) {
-                    this.dir = foundBunker.x > this.x ? 1 : -1;
-                    this.vx = this.baseSpeed * 2 * this.dir;
-                }
+                if (this.aiState === 'panic' && foundBunker) { this.dir = foundBunker.x > this.x ? 1 : -1; this.vx = this.baseSpeed * 2 * this.dir; }
             }
             applyGravity() {
-                if (draggedObj === this) return; 
-                let gy = getGroundY(this.x + this.width/2);
-                let floorY = gy - this.height;
-                
-                if (this.cover) {
-                    if (this.cover.type === 'trench') floorY = gy + 5; 
-                    else if (this.cover.type === 'watchtower') floorY = this.cover.y - this.height;
-                    else if (this.cover.type === 'sandbag') floorY = gy - this.height; 
-                }
-
-                if (this.y + this.height > globalWaterLevel && !this.isFlying) {
-                    if (this.isParachuting) this.isParachuting = false;
-                    this.vy -= 0.8; this.y += this.vy; this.vy *= 0.8; 
-                    if (this.y < globalWaterLevel - this.height) { this.y = globalWaterLevel - this.height; this.vy = 0; }
-                    this.vx *= 0.5; 
-                } else if (!this.isFlying && this.y < floorY) {
-                    if (this.isParachuting) this.vy = 1; else this.vy += 0.5; this.y += this.vy;
-                } else if (!this.isFlying && this.y >= floorY) {
-                    if (this.isParachuting) { this.isParachuting = false; } else if (this.vy > 8 && !this.isPossessed) { this.health -= this.vy * 5; audioSystem.hit(); }
-                    this.y = floorY; this.vy = 0;
-                }
+                if (draggedObj === this) return; let gy = getGroundY(this.x + this.width/2); let floorY = gy - this.height;
+                if (this.cover) { if (this.cover.type === 'trench') floorY = gy + 5; else if (this.cover.type === 'watchtower') floorY = this.cover.y - this.height; else if (this.cover.type === 'sandbag') floorY = gy - this.height; }
+                if (this.y + this.height > globalWaterLevel && !this.isFlying) { if (this.isParachuting) this.isParachuting = false; this.vy -= 0.8; this.y += this.vy; this.vy *= 0.8; if (this.y < globalWaterLevel - this.height) { this.y = globalWaterLevel - this.height; this.vy = 0; } this.vx *= 0.5; 
+                } else if (!this.isFlying && this.y < floorY) { if (this.isParachuting) this.vy = 1; else this.vy += 0.5; this.y += this.vy;
+                } else if (!this.isFlying && this.y >= floorY) { if (this.isParachuting) { this.isParachuting = false; } else if (this.vy > 8 && !this.isPossessed) { this.health -= this.vy * 5; audioSystem.hit(); } this.y = floorY; this.vy = 0; }
             }
-            
             drawStickman(weaponColor, weaponLen) {
-                if (this.dead) return;
-                ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                
+                if (this.dead) return; ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.lineCap = 'round';
                 let legSwing = ((this.aiState === 'patrol' || this.aiState === 'panic' || this.aiState === 'wander') && !this.isParachuting && draggedObj !== this) ? Math.sin(Date.now() / 80 * this.baseSpeed) * 8 : 0;
                 if (this.isPossessed && Math.abs(this.vx) > 0.1) legSwing = Math.sin(Date.now() / 50) * 10;
-
                 let headY = this.y + 4, pelvisY = this.y + 14, cx = this.x + 5;
-                
-                ctx.beginPath(); ctx.arc(cx, headY, 3, 0, Math.PI*2); ctx.stroke(); 
-                if (this.gender === 'f') { ctx.fillStyle = this.color; ctx.fillRect(cx - 3, headY - 2, 6, 3); }
-
-                ctx.beginPath(); ctx.moveTo(cx, headY+3); ctx.lineTo(cx, pelvisY); ctx.stroke(); 
-                ctx.beginPath(); ctx.moveTo(cx, pelvisY); ctx.lineTo(cx + legSwing, this.y + 20); ctx.stroke(); 
-                ctx.beginPath(); ctx.moveTo(cx, pelvisY); ctx.lineTo(cx - legSwing, this.y + 20); ctx.stroke(); 
-
-                let armY = headY + 4;
-                ctx.beginPath(); ctx.moveTo(cx, armY);
+                ctx.beginPath(); ctx.arc(cx, headY, 3, 0, Math.PI*2); ctx.stroke(); if (this.gender === 'f') { ctx.fillStyle = this.color; ctx.fillRect(cx - 3, headY - 2, 6, 3); }
+                ctx.beginPath(); ctx.moveTo(cx, headY+3); ctx.lineTo(cx, pelvisY); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx, pelvisY); ctx.lineTo(cx + legSwing, this.y + 20); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx, pelvisY); ctx.lineTo(cx - legSwing, this.y + 20); ctx.stroke(); 
+                let armY = headY + 4; ctx.beginPath(); ctx.moveTo(cx, armY);
                 if (this.aiState === 'attack' || this.isPossessed) {
-                    let angle;
-                    if (this.isPossessed) {
-                        let wMouse = screenToWorld(mouseX, mouseY);
-                        angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x);
-                    } else if (this.target) {
-                        angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                    } else { angle = this.dir > 0 ? 0 : Math.PI; }
-                    
-                    let reach = 8, handX = cx + Math.cos(angle)*reach, handY = armY + Math.sin(angle)*reach;
-                    ctx.lineTo(handX, handY); ctx.stroke();
-                    if (weaponLen > 0) {
-                        ctx.strokeStyle = weaponColor || '#333'; ctx.lineWidth=3; ctx.beginPath();
-                        ctx.moveTo(handX - Math.cos(angle)*3, handY - Math.sin(angle)*3); ctx.lineTo(handX + Math.cos(angle)*weaponLen, handY + Math.sin(angle)*weaponLen); ctx.stroke();
-                    }
-                } else if (this.aiState === 'panic') { 
-                    ctx.lineTo(cx - 5, armY - 5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx, armY); ctx.lineTo(cx + 5, armY - 5); ctx.stroke();
-                } else { ctx.lineTo(cx - legSwing, armY + 4); ctx.stroke(); }
-                
-                this.drawDialogue();
-
-                if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(cx, this.y - 10); ctx.lineTo(cx - 5, this.y - 20); ctx.lineTo(cx + 5, this.y - 20); ctx.fill(); }
+                    let angle; if (this.isPossessed) { let wMouse = screenToWorld(mouseX, mouseY); angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x); } else if (this.target) { angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); } else { angle = this.dir > 0 ? 0 : Math.PI; }
+                    let reach = 8, handX = cx + Math.cos(angle)*reach, handY = armY + Math.sin(angle)*reach; ctx.lineTo(handX, handY); ctx.stroke();
+                    if (weaponLen > 0) { ctx.strokeStyle = weaponColor || '#333'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(handX - Math.cos(angle)*3, handY - Math.sin(angle)*3); ctx.lineTo(handX + Math.cos(angle)*weaponLen, handY + Math.sin(angle)*weaponLen); ctx.stroke(); }
+                } else if (this.aiState === 'panic') { ctx.lineTo(cx - 5, armY - 5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx, armY); ctx.lineTo(cx + 5, armY - 5); ctx.stroke(); } else { ctx.lineTo(cx - legSwing, armY + 4); ctx.stroke(); }
+                this.drawDialogue(); if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(cx, this.y - 10); ctx.lineTo(cx - 5, this.y - 20); ctx.lineTo(cx + 5, this.y - 20); ctx.fill(); }
             }
         }
 
         class Soldier extends Entity {
-            constructor(side, x=null, y=null) {
-                super(side, x, y); 
-                if (y===null) this.y = getGroundY(this.x) - this.height;
-                this.baseSpeed = Math.random() * 0.8 + 0.4; this.vx = this.baseSpeed * this.dir;
-                this.shootTimer = 0; this.maxHealth = 20; this.health = 20; this.attackRange = 250;
-                this.color = this.side === 'civilian' ? (this.gender === 'f' ? '#c8a' : '#aaa') : (this.isEnemy ? '#d44' : '#6a6'); 
-                this.bulletColor = this.isEnemy ? '#ff4444' : '#ffff00';
-            }
+            constructor(side, x=null, y=null) { super(side, x, y); if (y===null) this.y = getGroundY(this.x) - this.height; this.baseSpeed = Math.random() * 0.8 + 0.4; this.vx = this.baseSpeed * this.dir; this.shootTimer = 0; this.maxHealth = 20; this.health = 20; this.attackRange = 250; this.color = this.side === 'civilian' ? (this.gender === 'f' ? '#c8a' : '#aaa') : (this.isEnemy ? '#d44' : '#6a6'); this.bulletColor = this.isEnemy ? '#ff4444' : '#ffff00'; }
             update() {
                 if (isDisco && Date.now() % 500 < 30 && !this.isFlying && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
-
                 this.checkCover(); this.applyGravity();
-                if (this.health <= 0) { 
-                    this.dead = true; 
-                    if(possessedEntity === this) possessedEntity = null;
-                    createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; 
-                }
+                if (this.health <= 0) { this.dead = true; if(possessedEntity === this) possessedEntity = null; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
                 if (draggedObj === this) return;
 
                 if (this.isPossessed) {
-                    this.aiState = 'possessed'; this.vx = 0;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    
-                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    this.aiState = 'possessed'; this.vx = 0; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
                     if ((keys['w'] || keys['arrowup'] || keys[' ']) && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -8; }
-                    
-                    if (isMouseDown && !keys['a'] && !keys['d']) {
-                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                        if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -8; }
-                    }
-
+                    if (isMouseDown && !keys['a'] && !keys['d']) { if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; } else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; } if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -8; } }
                     if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-
-                    if (isMouseDown) {
-                        this.shootTimer--;
-                        if (this.shootTimer <= 0) {
-                            audioSystem.shoot(); let angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x);
-                            addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 20);
-                            addParticle(this.x+5, this.y+8, -this.dir*2, -3, '#ffd700', 20, 2, 'casing');
-                            this.shootTimer = 15; 
-                        }
-                    }
+                    if (isMouseDown) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x); addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 20); addParticle(this.x+5, this.y+8, -this.dir*2, -3, '#ffd700', 20, 2, 'casing'); this.shootTimer = 15; } }
                     this.x += this.vx; return; 
                 }
 
-                let hasTarget = this.scanForTarget(this.attackRange);
-                this.aiTimer--;
-                
-                if (this.aiState === 'panic') {
-                    if(!this.cover) this.vx = this.baseSpeed * 1.5 * this.dir; 
-                    if (this.aiTimer <= 0) { this.aiState = 'patrol'; this.aiTimer = 100; }
-                } else if (hasTarget && this.aiState !== 'sad' && this.aiState !== 'betray' && this.side !== 'civilian') {
-                    if (this.aiState !== 'attack') { this.aiState = 'attack'; if(Math.random() < 0.4) this.speak(Math.random() > 0.5 ? "Contact!" : "Engaging!"); }
-                    this.vx = 0;
+                let hasTarget = this.scanForTarget(this.attackRange); this.aiTimer--;
+                if (this.aiState === 'panic') { if(!this.cover) this.vx = this.baseSpeed * 1.5 * this.dir; if (this.aiTimer <= 0) { this.aiState = 'patrol'; this.aiTimer = 100; }
+                } else if (hasTarget && this.aiState !== 'sad' && this.aiState !== 'betray' && this.side !== 'civilian') { if (this.aiState !== 'attack') { this.aiState = 'attack'; if(Math.random() < 0.4) this.speak(Math.random() > 0.5 ? "Contact!" : "Engaging!"); } this.vx = 0;
                 } else if (this.aiTimer <= 0 && !this.isParachuting) {
                     let r = Math.random();
-                    if (r < 0.015 && this.side !== 'civilian') {
-                        this.side = this.side === 'ally' ? 'enemy' : 'ally';
-                        this.isEnemy = !this.isEnemy; this.color = this.isEnemy ? '#d44' : '#6a6'; this.bulletColor = this.isEnemy ? '#ff4444' : '#ffff00';
-                        this.aiState = 'betray'; this.speak(Math.random() > 0.5 ? "Switching sides!" : "I can't do this..."); this.aiTimer = 100;
-                    } else if (r < 0.05 && this.side !== 'civilian') {
-                        this.aiState = 'sad'; this.vx = 0; this.speak(Math.random() > 0.5 ? "Why are we fighting?" : "I want to go home..."); this.aiTimer = 200;
-                    } else if (r < 0.5) {
-                        this.aiState = 'patrol'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * 0.6 * this.dir;
-                        if(Math.random() < 0.2 && this.side !== 'civilian') this.speak(Math.random() > 0.5 ? "Patrolling area." : "All clear.");
-                        this.aiTimer = Math.random() * 200 + 100;
-                    } else {
-                        this.aiState = 'idle'; this.vx = 0; this.aiTimer = Math.random() * 100 + 50;
-                    }
+                    if (r < 0.015 && this.side !== 'civilian') { this.side = this.side === 'ally' ? 'enemy' : 'ally'; this.isEnemy = !this.isEnemy; this.color = this.isEnemy ? '#d44' : '#6a6'; this.bulletColor = this.isEnemy ? '#ff4444' : '#ffff00'; this.aiState = 'betray'; this.speak(Math.random() > 0.5 ? "Switching sides!" : "I can't do this..."); this.aiTimer = 100;
+                    } else if (r < 0.05 && this.side !== 'civilian') { this.aiState = 'sad'; this.vx = 0; this.speak(Math.random() > 0.5 ? "Why are we fighting?" : "I want to go home..."); this.aiTimer = 200;
+                    } else if (r < 0.5) { this.aiState = 'patrol'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * 0.6 * this.dir; if(Math.random() < 0.2 && this.side !== 'civilian') this.speak(Math.random() > 0.5 ? "Patrolling area." : "All clear."); this.aiTimer = Math.random() * 200 + 100;
+                    } else { this.aiState = 'idle'; this.vx = 0; this.aiTimer = Math.random() * 100 + 50; }
                 }
-
-                if (this.aiState === 'sad' || this.aiState === 'idle' || this.aiState === 'betray' || (this.cover && this.cover.type !== 'barbed_wire' && !hasTarget)) {
-                    this.vx = 0;
-                    if (this.aiState === 'sad' && Math.random() < 0.05) addParticle(this.x+5, this.y+5, 0, 1, '#0af', 30, 2, 'water'); 
-                }
-
-                if (!this.isParachuting && (this.aiState === 'patrol' || this.aiState === 'panic')) {
-                    if (getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; 
-                    this.x += this.vx; 
-                }
-
-                if (hasTarget && this.aiState === 'attack' && this.side !== 'civilian') {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                        addParticle(this.x+5, this.y+8, Math.cos(angle)*10, Math.sin(angle)*10, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 10);
-                        addParticle(this.x+5, this.y+8, -this.dir*2, -3, '#ffd700', 20, 2, 'casing');
-                        this.shootTimer = Math.random() * 40 + 20; 
-                    }
-                }
+                if (this.aiState === 'sad' || this.aiState === 'idle' || this.aiState === 'betray' || (this.cover && this.cover.type !== 'barbed_wire' && !hasTarget)) { this.vx = 0; if (this.aiState === 'sad' && Math.random() < 0.05) addParticle(this.x+5, this.y+5, 0, 1, '#0af', 30, 2, 'water'); }
+                if (!this.isParachuting && (this.aiState === 'patrol' || this.aiState === 'panic')) { if (getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; this.x += this.vx; }
+                if (hasTarget && this.aiState === 'attack' && this.side !== 'civilian') { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+5, this.y+8, Math.cos(angle)*10, Math.sin(angle)*10, this.bulletColor, 40, 3, 'bullet', this.isEnemy, 10); addParticle(this.x+5, this.y+8, -this.dir*2, -3, '#ffd700', 20, 2, 'casing'); this.shootTimer = Math.random() * 40 + 20; } }
             }
-            draw() {
-                this.drawStickman(this.side === 'civilian' ? null : '#111', this.side === 'civilian' ? 0 : 10);
-                if (this.isParachuting) {
-                    ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.arc(this.x + 5, this.y - 15, 20, Math.PI, 0); ctx.fill(); 
-                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(this.x-15, this.y-15); ctx.lineTo(this.x+5, this.y+4); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(this.x+25, this.y-15); ctx.lineTo(this.x+5, this.y+4); ctx.stroke();
-                }
-            }
+            draw() { this.drawStickman(this.side === 'civilian' ? null : '#111', this.side === 'civilian' ? 0 : 10); if (this.isParachuting) { ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.arc(this.x + 5, this.y - 15, 20, Math.PI, 0); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(this.x-15, this.y-15); ctx.lineTo(this.x+5, this.y+4); ctx.stroke(); ctx.beginPath(); ctx.moveTo(this.x+25, this.y-15); ctx.lineTo(this.x+5, this.y+4); ctx.stroke(); } }
         }
 
         class Civilian extends Soldier {
             constructor(side, x, y) { super('civilian', x, y); this.exhaustion = 0; }
             update() {
                 if(this.isPossessed) { super.update(); return; } 
-
                 if (isDisco && Date.now() % 500 < 30 && !this.isFlying && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
-
                 this.checkCover(); this.applyGravity();
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
                 if (draggedObj === this) return;
 
                 this.aiTimer--; this.exhaustion += 0.05;
-
-                let inDanger = false;
-                for(let p of particles) { if (p.damage > 0 && Math.abs(p.x - this.x) < 200) { inDanger = true; break; } }
+                let inDanger = false; for(let p of particles) { if (p.damage > 0 && Math.abs(p.x - this.x) < 200) { inDanger = true; break; } }
                 if(this.y > globalWaterLevel - 10) inDanger = true; 
 
-                if (inDanger) {
-                    this.aiState = 'panic'; this.exhaustion += 0.2;
-                    if(!this.cover) this.vx = this.baseSpeed * 2 * this.dir; 
-                    if (Math.random() < 0.01) this.speak(this.gender==='f' ? "Eek!" : "Run!");
-                } else if (this.exhaustion > 100 && !this.cover) {
-                    this.aiState = 'sleep'; this.vx = 0;
-                    if(Math.random() < 0.02) { this.speak("Zzz..."); addParticle(this.x, this.y-10, 0, -1, '#fff', 20, 2, 'dust'); }
-                    this.exhaustion -= 0.5;
-                } else if (this.aiTimer <= 0 && this.aiState !== 'sleep') {
-                    this.aiState = 'wander'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * 0.5 * this.dir;
-                    this.aiTimer = Math.random() * 200 + 100;
-                }
-
-                if ((this.aiState === 'wander' || this.aiState === 'panic') && !this.cover) {
-                    if (getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; this.x += this.vx;
-                }
+                if (inDanger) { this.aiState = 'panic'; this.exhaustion += 0.2; if(!this.cover) this.vx = this.baseSpeed * 2 * this.dir; if (Math.random() < 0.01) this.speak(this.gender==='f' ? "Eek!" : "Run!");
+                } else if (this.exhaustion > 100 && !this.cover) { this.aiState = 'sleep'; this.vx = 0; if(Math.random() < 0.02) { this.speak("Zzz..."); addParticle(this.x, this.y-10, 0, -1, '#fff', 20, 2, 'dust'); } this.exhaustion -= 0.5;
+                } else if (this.aiTimer <= 0 && this.aiState !== 'sleep') { this.aiState = 'wander'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * 0.5 * this.dir; this.aiTimer = Math.random() * 200 + 100; }
+                if ((this.aiState === 'wander' || this.aiState === 'panic') && !this.cover) { if (getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; this.x += this.vx; }
             }
-            draw() {
-                if (this.aiState === 'sleep' && !this.dead && !this.isPossessed) {
-                    ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                    ctx.beginPath(); ctx.moveTo(this.x, this.y+18); ctx.lineTo(this.x+15, this.y+18); ctx.stroke();
-                    ctx.beginPath(); ctx.arc(this.x+18, this.y+18, 3, 0, Math.PI*2); ctx.stroke();
-                    this.drawDialogue();
-                } else { super.draw(); }
-            }
+            draw() { if (this.aiState === 'sleep' && !this.dead && !this.isPossessed) { ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(this.x, this.y+18); ctx.lineTo(this.x+15, this.y+18); ctx.stroke(); ctx.beginPath(); ctx.arc(this.x+18, this.y+18, 3, 0, Math.PI*2); ctx.stroke(); this.drawDialogue(); } else { super.draw(); } }
         }
 
-        class Commander extends Soldier {
-            update() { super.update(); if (!this.dead && !this.isPossessed) { for(let e of entities) { if (e.side === this.side && !e.dead && e !== this && Math.abs(e.x - this.x) < 150) { if (e.shootTimer > 0) e.shootTimer -= 0.5; } } } }
-            draw() { this.drawStickman('#000', 5); ctx.fillStyle = '#ccaa00'; ctx.fillRect(Math.trunc(this.x)+1, Math.trunc(this.y)-1, 8, 3); }
-        }
+        class Commander extends Soldier { update() { super.update(); if (!this.dead && !this.isPossessed) { for(let e of entities) { if (e.side === this.side && !e.dead && e !== this && Math.abs(e.x - this.x) < 150) { if (e.shootTimer > 0) e.shootTimer -= 0.5; } } } } draw() { this.drawStickman('#000', 5); ctx.fillStyle = '#ccaa00'; ctx.fillRect(Math.trunc(this.x)+1, Math.trunc(this.y)-1, 8, 3); } }
 
         class K9 extends Entity {
             constructor(side, x=null, y=null) { super(side, x, y); this.width=15; this.height=10; this.baseSpeed = Math.random() * 1.5 + 1.2; this.maxHealth = 15; this.health = 15; this.attackRange = 25; this.color = this.isEnemy ? '#421' : '#852'; }
             update() {
                 this.applyGravity(); if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x + 5, this.y + 5, 5); return; } if (draggedObj === this) return;
-                
                 if (this.isPossessed) {
-                    this.aiState = 'possessed'; this.vx = 0;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    this.aiState = 'possessed'; this.vx = 0; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
                     if ((keys['w'] || keys['arrowup'] || keys[' ']) && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -6; }
-                    
-                    if (isMouseDown && !keys['a'] && !keys['d']) {
-                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                        if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -6; }
-                    }
-
+                    if (isMouseDown && !keys['a'] && !keys['d']) { if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; } else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; } if (wMouse.y < this.y - 50 && this.y >= getGroundY(this.x + this.width/2) - this.height - 5) { this.vy = -6; } }
                     if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-                    if (isMouseDown && Math.hypot(wMouse.x - this.x, wMouse.y - this.y) < 40) {
-                        for(let e of entities) { if(!e.dead && e !== this && Math.hypot(e.x-this.x, e.y-this.y) < 30) { e.health -= 5; audioSystem.hit(); break; } }
-                    }
+                    if (isMouseDown && Math.hypot(wMouse.x - this.x, wMouse.y - this.y) < 40) { for(let e of entities) { if(!e.dead && e !== this && Math.hypot(e.x-this.x, e.y-this.y) < 30) { e.health -= 5; audioSystem.hit(); break; } } }
                     this.x += this.vx; return;
                 }
-
                 if (isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
-
                 let hasTarget = this.scanForTarget(this.attackRange);
-                if (hasTarget) { this.aiState = 'attack'; this.vx = 0; if(Math.random() < 0.2) { this.target.health -= 2; audioSystem.hit(); } 
-                } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; if (this.scanForTarget(300)) this.vx = (this.target.x > this.x ? this.baseSpeed*1.5 : -this.baseSpeed*1.5); }
+                if (hasTarget) { this.aiState = 'attack'; this.vx = 0; if(Math.random() < 0.2) { this.target.health -= 2; audioSystem.hit(); } } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; if (this.scanForTarget(300)) this.vx = (this.target.x > this.x ? this.baseSpeed*1.5 : -this.baseSpeed*1.5); }
                 if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; this.x += this.vx; 
             }
             draw() {
@@ -1234,319 +753,106 @@
             constructor(side, x, y) { super(side, x, y); this.width = 14; this.height = 28; this.baseSpeed = Math.random() * 0.5 + 1.5; this.maxHealth = 40; this.health = 40; this.attackRange = 300; this.buildTimer = 0; }
             update() {
                 if(this.isPossessed) { super.update(); return; } 
-
                 this.checkCover(); 
                 if (draggedObj !== this && !this.isFlying) { let floorY = getGroundY(this.x + this.width/2) - this.height - 15; if (this.y < floorY) { this.vy += 0.5; this.y += this.vy; } else if (this.y >= floorY) { this.y = floorY; this.vy = 0; } }
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x + 5, this.y + 10, 10); ragdolls.push(new Ragdoll(this.x+7, this.y+14, '#0ff', 0, 0)); return; }
                 if (draggedObj === this) return;
-                
                 if (isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-20) this.vy = -5;
-
                 let hasTarget = this.scanForTarget(this.attackRange);
                 if (hasTarget) { this.aiState = 'attack'; this.vx = 0; } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; }
                 this.x += this.vx; 
                 if (this.aiState === 'patrol') { this.buildTimer--; if (this.buildTimer <= 0) { addParticle(this.x, getGroundY(this.x) - 15, 0, 0, this.isEnemy ? '#f44' : '#44f', 200, 15, 'wool'); this.buildTimer = 8; } }
-                if (hasTarget && this.aiState === 'attack') {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        let dx = this.target.x - this.x; let dy = this.target.y - this.y; let dist = Math.hypot(dx, dy);
-                        if (dist < 40) { audioSystem.hit(); this.target.health -= 15; createExplosion(this.target.x, this.target.y, 5, false, 0); this.shootTimer = 20;
-                        } else { let angle = Math.atan2(dy, dx); addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, '#fff', 60, 4, 'arrow', this.isEnemy, 20); this.shootTimer = 40; }
-                    }
-                }
+                if (hasTarget && this.aiState === 'attack') { this.shootTimer--; if (this.shootTimer <= 0) { let dx = this.target.x - this.x; let dy = this.target.y - this.y; let dist = Math.hypot(dx, dy); if (dist < 40) { audioSystem.hit(); this.target.health -= 15; createExplosion(this.target.x, this.target.y, 5, false, 0); this.shootTimer = 20; } else { let angle = Math.atan2(dy, dx); addParticle(this.x+5, this.y+8, Math.cos(angle)*15, Math.sin(angle)*15, '#fff', 60, 4, 'arrow', this.isEnemy, 20); this.shootTimer = 40; } } }
             }
             draw() {
                 if (this.dead) return; ctx.fillStyle = '#8b4513'; ctx.fillRect(Math.trunc(this.x)+2, Math.trunc(this.y)-4, 10, 10); ctx.fillStyle = '#00ffff'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y)+6, 14, 12); ctx.fillStyle = '#0000ff'; ctx.fillRect(Math.trunc(this.x)+2, Math.trunc(this.y)+18, 10, 10); 
                 if ((this.aiState === 'attack' && this.target) || this.isPossessed) {
-                    let angle;
-                    if(this.isPossessed) { let wMouse=screenToWorld(mouseX,mouseY); angle = Math.atan2(wMouse.y-this.y, wMouse.x-this.x); }
-                    else { let dx = this.target.x - this.x; let dy = this.target.y - this.y; angle = Math.atan2(dy, dx); }
-                    
+                    let angle; if(this.isPossessed) { let wMouse=screenToWorld(mouseX,mouseY); angle = Math.atan2(wMouse.y-this.y, wMouse.x-this.x); } else { let dx = this.target.x - this.x; let dy = this.target.y - this.y; angle = Math.atan2(dy, dx); }
                     if (this.isPossessed || (this.target && Math.hypot(this.target.x - this.x, this.target.y - this.y) < 40)) { ctx.fillStyle = '#0ff'; ctx.fillRect(this.x + (this.dir===1?12:-6), this.y+6, 4, 16); 
                     } else { ctx.strokeStyle = '#8b4513'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(this.x + (this.dir===1?14:-4), this.y+10, 8, -Math.PI/2, Math.PI/2, this.dir===-1); ctx.stroke(); ctx.strokeStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(this.x+(this.dir===1?14:-4), this.y+2); ctx.lineTo(this.x+(this.dir===1?14:-4), this.y+18); ctx.stroke(); }
                 } else { ctx.fillStyle = this.isEnemy ? '#f44' : '#44f'; ctx.fillRect(this.x + (this.dir===1?10:-4), this.y+10, 8, 8); }
-                this.drawDialogue();
-                if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+this.width/2, this.y - 10); ctx.lineTo(this.x+this.width/2 - 5, this.y - 20); ctx.lineTo(this.x+this.width/2 + 5, this.y - 20); ctx.fill(); }
+                this.drawDialogue(); if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+this.width/2, this.y - 10); ctx.lineTo(this.x+this.width/2 - 5, this.y - 20); ctx.lineTo(this.x+this.width/2 + 5, this.y - 20); ctx.fill(); }
             }
         }
 
         class Paratrooper extends Soldier { constructor(side, x, y) { super(side, x, y); this.isParachuting = true; } }
-
-        class MachineGunner extends Soldier {
-            constructor(side, x, y) { super(side, x, y); this.baseSpeed = Math.random() * 0.4 + 0.2; this.maxHealth = 40; this.health = 40; this.burstCount = 0; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && this.target && !this.isPossessed) {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                        addParticle(this.x+5, this.y+8, Math.cos(angle)*10, Math.sin(angle)*10+(Math.random()-0.5)*0.5, this.bulletColor, 30, 3, 'bullet', this.isEnemy, 8);
-                        addParticle(this.x+5, this.y+8, -this.dir*3, -2, '#ffd700', 20, 2, 'casing');
-                        this.burstCount++; this.shootTimer = 4; if (this.burstCount > 10) { this.shootTimer = 100; this.burstCount = 0; }
-                    }
-                }
-            }
-            draw() { this.drawStickman('#000', 15); } 
-        }
-
-        class Flamethrower extends Soldier {
-            constructor(side, x, y) { super(side, x, y); this.attackRange = 150; this.maxHealth = 30; this.health = 30; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && this.target && !this.isPossessed) {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        if(Math.random()<0.3) audioSystem.playTone(100, 'noise', 0.1, 0.05); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                        for(let i=0; i<3; i++) addParticle(this.x+5, this.y+8, Math.cos(angle)*8+(Math.random()-0.5)*2, Math.sin(angle)*8+(Math.random()-0.5)*2, Math.random()>0.5?'#ff4500':'#ffa500', 30, 4, 'flame', this.isEnemy, 2);
-                        this.shootTimer = 2; 
-                    }
-                }
-            }
-            draw() { this.drawStickman('#444', 8); ctx.fillStyle = '#f00'; ctx.fillRect(this.x+ (this.dir===1?-2:8), this.y+4, 4, 10); }
-        }
-
-        class Engineer extends Soldier {
-            constructor(side, x, y) { super(side, x, y); this.attackRange = 150; this.buildTimer = Math.random() * 300 + 200; }
-            update() {
-                super.update();
-                if (this.aiState === 'patrol' && !this.isParachuting && !this.isPossessed) {
-                    this.buildTimer--;
-                    if (this.buildTimer <= 0) {
-                        if (Math.random() > 0.3) structures.push(new Structure(this.x + (this.dir*20), getGroundY(this.x) - 20, 30, 20, 'sandbag'));
-                        else structures.push(new Structure(this.x + (this.dir*20), getGroundY(this.x) - 5, 20, 5, 'mine'));
-                        this.buildTimer = Math.random() * 500 + 300; this.vx = 0; 
-                    }
-                }
-            }
-            draw() { this.drawStickman('#111', 8); ctx.fillStyle = '#ffcc00'; ctx.fillRect(this.x+2, this.y+1, 6, 3); }
-        }
-
-        class Sniper extends Soldier {
-            constructor(side, x, y) { super(side, x, y); this.baseSpeed = Math.random() * 0.3 + 0.1; this.attackRange = 600; this.maxHealth = 15; this.health = 15; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && this.target && !this.isPossessed) {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        audioSystem.heavyShoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                        addParticle(this.x+5, this.y+8, Math.cos(angle)*25, Math.sin(angle)*25, '#fff', 50, 2, 'bullet', this.isEnemy, 80);
-                        addParticle(this.x+5, this.y+8, -this.dir, -4, '#ffd700', 30, 2, 'casing');
-                        this.shootTimer = 150; 
-                    }
-                }
-            }
-            draw() {
-                if (this.aiState === 'attack' && this.target && this.shootTimer < 50 && !this.dead && !this.isPossessed) { ctx.beginPath(); ctx.moveTo(this.x+5, this.y+8); ctx.lineTo(this.target.x+this.target.width/2, this.target.y+this.target.height/2); ctx.strokeStyle = this.isEnemy ? 'rgba(255,0,0,0.4)' : 'rgba(0,255,0,0.4)'; ctx.lineWidth = 1; ctx.stroke(); }
-                this.drawStickman('#000', 18); 
-            }
-        }
-
-        class Rocketeer extends Soldier {
-            constructor(side, x, y) { super(side, x, y); this.attackRange = 350; this.shootTimer = 100; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && this.target && !this.isPossessed) {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        audioSystem.playTone(200, 'sawtooth', 0.2, 0.1, 100); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                        addParticle(this.x+5, this.y+8, Math.cos(angle)*6, Math.sin(angle)*6, '#ccc', 80, 5, 'rocket', this.isEnemy, 0); this.shootTimer = 200; 
-                    }
-                }
-            }
-            draw() { this.drawStickman('#2e8b57', 12); } 
-        }
-
+        class MachineGunner extends Soldier { constructor(side, x, y) { super(side, x, y); this.baseSpeed = Math.random() * 0.4 + 0.2; this.maxHealth = 40; this.health = 40; this.burstCount = 0; } update() { super.update(); if (this.aiState === 'attack' && this.target && !this.isPossessed) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+5, this.y+8, Math.cos(angle)*10, Math.sin(angle)*10+(Math.random()-0.5)*0.5, this.bulletColor, 30, 3, 'bullet', this.isEnemy, 8); addParticle(this.x+5, this.y+8, -this.dir*3, -2, '#ffd700', 20, 2, 'casing'); this.burstCount++; this.shootTimer = 4; if (this.burstCount > 10) { this.shootTimer = 100; this.burstCount = 0; } } } } draw() { this.drawStickman('#000', 15); } }
+        class Flamethrower extends Soldier { constructor(side, x, y) { super(side, x, y); this.attackRange = 150; this.maxHealth = 30; this.health = 30; } update() { super.update(); if (this.aiState === 'attack' && this.target && !this.isPossessed) { this.shootTimer--; if (this.shootTimer <= 0) { if(Math.random()<0.3) audioSystem.playTone(100, 'noise', 0.1, 0.05); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); for(let i=0; i<3; i++) addParticle(this.x+5, this.y+8, Math.cos(angle)*8+(Math.random()-0.5)*2, Math.sin(angle)*8+(Math.random()-0.5)*2, Math.random()>0.5?'#ff4500':'#ffa500', 30, 4, 'flame', this.isEnemy, 2); this.shootTimer = 2; } } } draw() { this.drawStickman('#444', 8); ctx.fillStyle = '#f00'; ctx.fillRect(this.x+ (this.dir===1?-2:8), this.y+4, 4, 10); } }
+        class Engineer extends Soldier { constructor(side, x, y) { super(side, x, y); this.attackRange = 150; this.buildTimer = Math.random() * 300 + 200; } update() { super.update(); if (this.aiState === 'patrol' && !this.isParachuting && !this.isPossessed) { this.buildTimer--; if (this.buildTimer <= 0) { if (Math.random() > 0.3) structures.push(new Structure(this.x + (this.dir*20), getGroundY(this.x) - 20, 30, 20, 'sandbag')); else structures.push(new Structure(this.x + (this.dir*20), getGroundY(this.x) - 5, 20, 5, 'mine')); this.buildTimer = Math.random() * 500 + 300; this.vx = 0; } } } draw() { this.drawStickman('#111', 8); ctx.fillStyle = '#ffcc00'; ctx.fillRect(this.x+2, this.y+1, 6, 3); } }
+        class Sniper extends Soldier { constructor(side, x, y) { super(side, x, y); this.baseSpeed = Math.random() * 0.3 + 0.1; this.attackRange = 600; this.maxHealth = 15; this.health = 15; } update() { super.update(); if (this.aiState === 'attack' && this.target && !this.isPossessed) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+5, this.y+8, Math.cos(angle)*25, Math.sin(angle)*25, '#fff', 50, 2, 'bullet', this.isEnemy, 80); addParticle(this.x+5, this.y+8, -this.dir, -4, '#ffd700', 30, 2, 'casing'); this.shootTimer = 150; } } } draw() { if (this.aiState === 'attack' && this.target && this.shootTimer < 50 && !this.dead && !this.isPossessed) { ctx.beginPath(); ctx.moveTo(this.x+5, this.y+8); ctx.lineTo(this.target.x+this.target.width/2, this.target.y+this.target.height/2); ctx.strokeStyle = this.isEnemy ? 'rgba(255,0,0,0.4)' : 'rgba(0,255,0,0.4)'; ctx.lineWidth = 1; ctx.stroke(); } this.drawStickman('#000', 18); } }
+        class Rocketeer extends Soldier { constructor(side, x, y) { super(side, x, y); this.attackRange = 350; this.shootTimer = 100; } update() { super.update(); if (this.aiState === 'attack' && this.target && !this.isPossessed) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.playTone(200, 'sawtooth', 0.2, 0.1, 100); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+5, this.y+8, Math.cos(angle)*6, Math.sin(angle)*6, '#ccc', 80, 5, 'rocket', this.isEnemy, 0); this.shootTimer = 200; } } } draw() { this.drawStickman('#2e8b57', 12); } }
         class Medic extends Soldier {
             constructor(side, x, y) { super(side, x, y); this.attackRange = 100; this.shootTimer = 50; }
             update() {
                 if(this.isPossessed) { super.update(); return; }
-                this.checkCover(); this.applyGravity();
-                if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x, this.y, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; }
-                if (draggedObj === this) return;
-
+                this.checkCover(); this.applyGravity(); if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createBlood(this.x, this.y, 10); ragdolls.push(new Ragdoll(this.x+5, this.y+10, this.color, 0, 0)); return; } if (draggedObj === this) return;
                 if (isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-5) this.vy = -5;
-
-                let hasTarget = this.scanForTarget(this.attackRange, true); 
-                
-                this.aiTimer--;
-                if (hasTarget) {
-                    this.aiState = 'attack'; 
-                    if (Math.abs(this.target.x - this.x) > 20) { this.vx = this.target.x > this.x ? this.baseSpeed : -this.baseSpeed; this.x += this.vx; } 
-                    else {
-                        this.vx = 0; this.shootTimer--;
-                        if (this.shootTimer <= 0) {
-                            audioSystem.playTone(600, 'sine', 0.2, 0.05); this.target.health = Math.min(this.target.maxHealth, this.target.health + 10);
-                            for(let i=0; i<3; i++) addParticle(this.target.x + 5, this.target.y, (Math.random()-0.5)*2, -2, '#00ff00', 30, 4, 'heal');
-                            this.speak("Healing!"); this.shootTimer = 60;
-                        }
-                    }
-                } else if (this.aiTimer <= 0) {
-                    let r = Math.random();
-                    if (r < 0.2) { this.aiState = 'idle'; this.vx = 0; this.aiTimer = 100; }
-                    else { this.aiState = 'patrol'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * this.dir; this.aiTimer = 150; }
-                }
-
+                let hasTarget = this.scanForTarget(this.attackRange, true); this.aiTimer--;
+                if (hasTarget) { this.aiState = 'attack'; if (Math.abs(this.target.x - this.x) > 20) { this.vx = this.target.x > this.x ? this.baseSpeed : -this.baseSpeed; this.x += this.vx; } else { this.vx = 0; this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.playTone(600, 'sine', 0.2, 0.05); this.target.health = Math.min(this.target.maxHealth, this.target.health + 10); for(let i=0; i<3; i++) addParticle(this.target.x + 5, this.target.y, (Math.random()-0.5)*2, -2, '#00ff00', 30, 4, 'heal'); this.speak("Healing!"); this.shootTimer = 60; } }
+                } else if (this.aiTimer <= 0) { let r = Math.random(); if (r < 0.2) { this.aiState = 'idle'; this.vx = 0; this.aiTimer = 100; } else { this.aiState = 'patrol'; this.dir = Math.random() > 0.5 ? 1 : -1; this.vx = this.baseSpeed * this.dir; this.aiTimer = 150; } }
                 if (this.aiState === 'patrol') { if (getGroundY(this.x + this.vx*10) < this.y) this.vy = -3; this.x += this.vx; }
             }
             draw() { this.drawStickman(null, 0); ctx.fillStyle = '#fff'; ctx.fillRect(this.x+2, this.y+1, 6, 6); ctx.fillStyle = '#f00'; ctx.fillRect(this.x+4, this.y+2, 2, 4); ctx.fillRect(this.x+3, this.y+3, 4, 2); }
         }
 
         class Tank extends Entity {
-            constructor(side, x, y) {
-                super(side, x, y); this.width=50; this.height=30; 
-                if (y===null) this.y = getGroundY(this.x) - this.height;
-                this.baseSpeed = Math.random() * 0.3 + 0.2; this.vx = this.baseSpeed * this.dir; this.shootTimer = 0;
-                this.maxHealth = 250; this.health = 250; this.attackRange = 400; this.color = this.isEnemy ? '#5a2e2e' : '#2f4f4f'; 
-            }
+            constructor(side, x, y) { super(side, x, y); this.width=50; this.height=30; if (y===null) this.y = getGroundY(this.x) - this.height; this.baseSpeed = Math.random() * 0.3 + 0.2; this.vx = this.baseSpeed * this.dir; this.shootTimer = 0; this.maxHealth = 250; this.health = 250; this.attackRange = 400; this.color = this.isEnemy ? '#5a2e2e' : '#2f4f4f'; }
             update() {
                 if(isDisco && Date.now() % 500 < 30 && this.y >= getGroundY(this.x)-this.height-5) this.vy = -3;
-
-                this.applyGravity();
-                if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+25, this.y+15, 30, true); return; }
-                if (draggedObj === this) return;
-
+                this.applyGravity(); if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+25, this.y+15, 30, true); return; } if (draggedObj === this) return;
                 if (this.isPossessed) {
-                    this.aiState = 'possessed'; this.vx = 0;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    
-                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    if (isMouseDown && !keys['a'] && !keys['d']) {
-                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    }
-
-                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; 
-                    
-                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-                    if (isMouseDown) {
-                        this.shootTimer--;
-                        if (this.shootTimer <= 0) {
-                            audioSystem.heavyShoot(); let angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x);
-                            addParticle(this.x + (this.dir===1?50:-20), this.y-12, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0);
-                            createExplosion(this.x + (this.dir===1?55:-25), this.y-12, 10, false); this.shootTimer = 50; 
-                        }
-                    }
+                    this.aiState = 'possessed'; this.vx = 0; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    if (isMouseDown && !keys['a'] && !keys['d']) { if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; } else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; } }
+                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if (isMouseDown) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); let angle = Math.atan2(wMouse.y - this.y, wMouse.x - this.x); addParticle(this.x + (this.dir===1?50:-20), this.y-12, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); createExplosion(this.x + (this.dir===1?55:-25), this.y-12, 10, false); this.shootTimer = 50; } }
                     this.x += this.vx; return;
                 }
-
                 if (this.scanForTarget(this.attackRange)) { this.aiState = 'attack'; this.vx = 0; } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; }
-                if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; 
-                this.x += this.vx;
-
-                if (this.aiState === 'attack') {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) {
-                        audioSystem.heavyShoot();
-                        addParticle(this.x + (this.dir===1?50:-20), this.y-12, this.dir*12, 0, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0);
-                        createExplosion(this.x + (this.dir===1?55:-25), this.y-12, 10, false); this.shootTimer = Math.random() * 100 + 100; 
-                    }
-                }
+                if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; this.x += this.vx;
+                if (this.aiState === 'attack') { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); addParticle(this.x + (this.dir===1?50:-20), this.y-12, this.dir*12, 0, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); createExplosion(this.x + (this.dir===1?55:-25), this.y-12, 10, false); this.shootTimer = Math.random() * 100 + 100; } }
             }
             draw() {
-                if (this.dead) return;
-                ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                ctx.fillRect(Math.trunc(this.x)+10, Math.trunc(this.y)-15, 30, 15); ctx.fillStyle = '#111';
-                
-                if (this.isPossessed) {
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    ctx.save(); ctx.translate(this.x+25, this.y-5); ctx.rotate(Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+25))); ctx.fillRect(0, -3, 30, 6); ctx.restore();
-                    ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+25, this.y - 20); ctx.lineTo(this.x+20, this.y - 30); ctx.lineTo(this.x+30, this.y - 30); ctx.fill();
-                } else {
-                    ctx.fillRect(Math.trunc(this.x)+(this.dir===1?30:-20), Math.trunc(this.y)-10, 40, 6);
-                }
+                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillRect(Math.trunc(this.x)+10, Math.trunc(this.y)-15, 30, 15); ctx.fillStyle = '#111';
+                if (this.isPossessed) { let wMouse = screenToWorld(mouseX, mouseY); ctx.save(); ctx.translate(this.x+25, this.y-5); ctx.rotate(Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+25))); ctx.fillRect(0, -3, 30, 6); ctx.restore(); ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+25, this.y - 20); ctx.lineTo(this.x+20, this.y - 30); ctx.lineTo(this.x+30, this.y - 30); ctx.fill();
+                } else { ctx.fillRect(Math.trunc(this.x)+(this.dir===1?30:-20), Math.trunc(this.y)-10, 40, 6); }
             }
         }
 
         class APC extends Tank {
             constructor(side, x, y) { super(side, x, y); this.width=40; this.height=25; this.baseSpeed = 0.8; this.health = 150; this.color = this.isEnemy ? '#633' : '#363'; this.burst = 0; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && !this.isPossessed) {
-                    if (this.shootTimer <= 0) {
-                        audioSystem.shoot(); addParticle(this.x + (this.dir===1?40:-10), this.y-5, this.dir*15, (Math.random()-0.5), '#ff0', 40, 3, 'bullet', this.isEnemy, 15);
-                        this.burst++; this.shootTimer = 5; if(this.burst > 5) { this.burst = 0; this.shootTimer = 80; }
-                    }
-                } else if (this.isPossessed && isMouseDown && this.shootTimer <= 0) {
-                    audioSystem.shoot(); let wMouse = screenToWorld(mouseX, mouseY); let angle = Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+20));
-                    addParticle(this.x + (this.dir===1?40:-10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff0', 40, 3, 'bullet', this.isEnemy, 15);
-                    this.shootTimer = 5; 
-                }
-            }
-            draw() {
-                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(this.x+10, this.y+25, 6, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x+30, this.y+25, 6, 0, Math.PI*2); ctx.fill();
-                if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+20, this.y - 10); ctx.lineTo(this.x+15, this.y - 20); ctx.lineTo(this.x+25, this.y - 20); ctx.fill(); }
-            }
+            update() { super.update(); if (this.aiState === 'attack' && !this.isPossessed) { if (this.shootTimer <= 0) { audioSystem.shoot(); addParticle(this.x + (this.dir===1?40:-10), this.y-5, this.dir*15, (Math.random()-0.5), '#ff0', 40, 3, 'bullet', this.isEnemy, 15); this.burst++; this.shootTimer = 5; if(this.burst > 5) { this.burst = 0; this.shootTimer = 80; } } } else if (this.isPossessed && isMouseDown && this.shootTimer <= 0) { audioSystem.shoot(); let wMouse = screenToWorld(mouseX, mouseY); let angle = Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+20)); addParticle(this.x + (this.dir===1?40:-10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff0', 40, 3, 'bullet', this.isEnemy, 15); this.shootTimer = 5; } }
+            draw() { if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(this.x+10, this.y+25, 6, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x+30, this.y+25, 6, 0, Math.PI*2); ctx.fill(); if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+20, this.y - 10); ctx.lineTo(this.x+15, this.y - 20); ctx.lineTo(this.x+25, this.y - 20); ctx.fill(); } }
         }
 
         class Jeep extends Tank {
             constructor(side, x, y) { super(side, x, y); this.width=30; this.height=20; this.baseSpeed = 1.5; this.health = 80; this.color = this.isEnemy ? '#844' : '#484'; this.attackRange = 250; }
-            update() {
-                super.update();
-                if (this.aiState === 'attack' && this.shootTimer <= 0 && !this.isPossessed) { audioSystem.shoot(); addParticle(this.x + (this.dir===1?30:-10), this.y-5, this.dir*12, (Math.random()-0.5), '#ff0', 40, 3, 'bullet', this.isEnemy, 10); this.shootTimer = 15; }
-                else if (this.isPossessed && isMouseDown && this.shootTimer <= 0) {
-                    audioSystem.shoot(); let wMouse = screenToWorld(mouseX, mouseY); let angle = Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+15));
-                    addParticle(this.x + (this.dir===1?30:-10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff0', 40, 3, 'bullet', this.isEnemy, 15);
-                    this.shootTimer = 10; 
-                }
-            }
-            draw() {
-                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(this.x+5, this.y+20, 5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x+25, this.y+20, 5, 0, Math.PI*2); ctx.fill();
-                if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+15, this.y - 10); ctx.lineTo(this.x+10, this.y - 20); ctx.lineTo(this.x+20, this.y - 20); ctx.fill(); }
-            }
+            update() { super.update(); if (this.aiState === 'attack' && this.shootTimer <= 0 && !this.isPossessed) { audioSystem.shoot(); addParticle(this.x + (this.dir===1?30:-10), this.y-5, this.dir*12, (Math.random()-0.5), '#ff0', 40, 3, 'bullet', this.isEnemy, 10); this.shootTimer = 15; } else if (this.isPossessed && isMouseDown && this.shootTimer <= 0) { audioSystem.shoot(); let wMouse = screenToWorld(mouseX, mouseY); let angle = Math.atan2(wMouse.y-(this.y-5), wMouse.x-(this.x+15)); addParticle(this.x + (this.dir===1?30:-10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff0', 40, 3, 'bullet', this.isEnemy, 15); this.shootTimer = 10; } }
+            draw() { if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(this.x+5, this.y+20, 5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(this.x+25, this.y+20, 5, 0, Math.PI*2); ctx.fill(); if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+15, this.y - 10); ctx.lineTo(this.x+10, this.y - 20); ctx.lineTo(this.x+20, this.y - 20); ctx.fill(); } }
         }
 
         class Boat extends Entity {
             constructor(side, x, y) { super(side, x, y); this.width=60; this.height=20; this.baseSpeed = 1.5; this.health = 200; this.maxHealth = 200; this.color = this.isEnemy ? '#322' : '#234'; this.attackRange = 400; this.shootTimer = 0; }
-            applyGravity() {
-                if (draggedObj === this) return; 
-                let gy = getGroundY(this.x + this.width/2);
-                let floorY = Math.min(gy, globalWaterLevel) - this.height; 
-                if (this.y < floorY) { this.vy += 0.5; this.y += this.vy; } else if (this.y >= floorY) { this.y = floorY; this.vy = 0; }
-            }
+            applyGravity() { if (draggedObj === this) return; let gy = getGroundY(this.x + this.width/2); let floorY = Math.min(gy, globalWaterLevel) - this.height; if (this.y < floorY) { this.vy += 0.5; this.y += this.vy; } else if (this.y >= floorY) { this.y = floorY; this.vy = 0; } }
             update() {
                 if(isDisco && Date.now() % 500 < 30 && this.y >= Math.min(getGroundY(this.x), globalWaterLevel)-this.height-5) this.vy = -3;
-                
                 this.applyGravity(); if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+30, this.y+10, 30, true); return; } if (draggedObj === this) return;
                 
                 if (this.isPossessed) {
-                    this.aiState = 'possessed'; this.vx = 0;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    if (isMouseDown && !keys['a'] && !keys['d']) {
-                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    }
+                    this.aiState = 'possessed'; this.vx = 0; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    if (isMouseDown && !keys['a'] && !keys['d']) { if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; } else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; } }
                     if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-                    if (isMouseDown && this.shootTimer <= 0) {
-                        audioSystem.heavyShoot(); let angle = Math.atan2(wMouse.y-(this.y-10), wMouse.x-(this.x+30));
-                        addParticle(this.x+(this.dir===1?50:10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); this.shootTimer = 50; 
-                    }
-                    if (this.y >= globalWaterLevel - this.height - 5) { this.x += this.vx; } else { this.x += this.vx * 0.1; }
-                    return;
+                    if (isMouseDown && this.shootTimer <= 0) { audioSystem.heavyShoot(); let angle = Math.atan2(wMouse.y-(this.y-10), wMouse.x-(this.x+30)); addParticle(this.x+(this.dir===1?50:10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); this.shootTimer = 50; }
+                    if (this.y >= globalWaterLevel - this.height - 5) { this.x += this.vx; } else { this.x += this.vx * 0.1; } return;
                 }
-
                 if (this.scanForTarget(this.attackRange)) { this.aiState = 'attack'; this.vx = 0; } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; }
                 if (this.y >= globalWaterLevel - this.height - 5) { this.x += this.vx; } else { this.x += this.vx * 0.1; } 
-                if (this.aiState === 'attack') {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) { audioSystem.heavyShoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+(this.dir===1?50:10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); this.shootTimer = 80; }
-                }
+                if (this.aiState === 'attack') { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.heavyShoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+(this.dir===1?50:10), this.y-5, Math.cos(angle)*15, Math.sin(angle)*15, '#ff4500', 60, 6, 'rocket', this.isEnemy, 0); this.shootTimer = 80; } }
             }
             draw() {
-                if (this.dead) return; ctx.fillStyle = this.color; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x+this.width, this.y); ctx.lineTo(this.x+this.width-10, this.y+this.height); ctx.lineTo(this.x+10, this.y+this.height); ctx.fill();
-                ctx.fillStyle = '#666'; ctx.fillRect(this.x+20, this.y-15, 20, 15); ctx.fillStyle = '#111'; 
-                
-                if(this.isPossessed) {
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    ctx.save(); ctx.translate(this.x+30, this.y-10); ctx.rotate(Math.atan2(wMouse.y-(this.y-10), wMouse.x-(this.x+30))); ctx.fillRect(0, -2, 30, 4); ctx.restore();
-                    ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+30, this.y - 20); ctx.lineTo(this.x+25, this.y - 30); ctx.lineTo(this.x+35, this.y - 30); ctx.fill();
-                } else {
-                    ctx.fillRect(this.x+(this.dir===1?40:-10), this.y-10, 30, 4); 
-                }
+                if (this.dead) return; ctx.fillStyle = this.color; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x+this.width, this.y); ctx.lineTo(this.x+this.width-10, this.y+this.height); ctx.lineTo(this.x+10, this.y+this.height); ctx.fill(); ctx.fillStyle = '#666'; ctx.fillRect(this.x+20, this.y-15, 20, 15); ctx.fillStyle = '#111'; 
+                if(this.isPossessed) { let wMouse = screenToWorld(mouseX, mouseY); ctx.save(); ctx.translate(this.x+30, this.y-10); ctx.rotate(Math.atan2(wMouse.y-(this.y-10), wMouse.x-(this.x+30))); ctx.fillRect(0, -2, 30, 4); ctx.restore(); ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+30, this.y - 20); ctx.lineTo(this.x+25, this.y - 30); ctx.lineTo(this.x+35, this.y - 30); ctx.fill(); } else { ctx.fillRect(this.x+(this.dir===1?40:-10), this.y-10, 30, 4); }
             }
         }
 
@@ -1557,41 +863,20 @@
                 this.applyGravity(); if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+12, this.y+20, 20, true); return; } if (draggedObj === this) return;
                 
                 if (this.isPossessed) {
-                    this.aiState = 'possessed'; this.vx = 0;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    if (isMouseDown && !keys['a'] && !keys['d']) {
-                        if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; }
-                        else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; }
-                    }
-                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2;
-                    if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-                    if (isMouseDown && this.shootTimer <= 0) {
-                        audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+12));
-                        addParticle(this.x+12, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15+(Math.random()-0.5)*2, '#ff0', 40, 4, 'bullet', this.isEnemy, 25); this.shootTimer = 2; 
-                    }
+                    this.aiState = 'possessed'; this.vx = 0; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.vx = -this.baseSpeed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.vx = this.baseSpeed * 2; this.dir = 1; }
+                    if (isMouseDown && !keys['a'] && !keys['d']) { if (wMouse.x < this.x - 10) { this.vx = -this.baseSpeed * 2; this.dir = -1; } else if (wMouse.x > this.x + 10) { this.vx = this.baseSpeed * 2; this.dir = 1; } }
+                    if (getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
+                    if (isMouseDown && this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+12)); addParticle(this.x+12, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15+(Math.random()-0.5)*2, '#ff0', 40, 4, 'bullet', this.isEnemy, 25); this.shootTimer = 2; }
                     this.x += this.vx; return;
                 }
-
                 if (this.scanForTarget(this.attackRange)) { this.aiState = 'attack'; this.vx = 0; } else { this.aiState = 'patrol'; this.vx = this.baseSpeed * this.dir; }
                 if (this.aiState === 'patrol' && getGroundY(this.x + this.vx*20) < this.y) this.vy = -2; this.x += this.vx;
-                if (this.aiState === 'attack') {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+12, this.y+15, Math.cos(angle)*12, Math.sin(angle)*12+(Math.random()-0.5)*2, '#ff0', 40, 4, 'bullet', this.isEnemy, 15); this.shootTimer = 3; }
-                }
+                if (this.aiState === 'attack') { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x); addParticle(this.x+12, this.y+15, Math.cos(angle)*12, Math.sin(angle)*12+(Math.random()-0.5)*2, '#ff0', 40, 4, 'bullet', this.isEnemy, 15); this.shootTimer = 3; } }
             }
             draw() {
-                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
-                ctx.fillStyle = '#111'; 
-                
-                if(this.isPossessed) {
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    ctx.save(); ctx.translate(this.x+12, this.y+15); ctx.rotate(Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+12))); ctx.fillRect(0, -5, 25, 10); ctx.restore();
-                    ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+12, this.y - 10); ctx.lineTo(this.x+7, this.y - 20); ctx.lineTo(this.x+17, this.y - 20); ctx.fill();
-                } else {
-                    ctx.fillRect(Math.trunc(this.x)+(this.dir===1?15:-15), Math.trunc(this.y)+10, 25, 10); 
-                }
+                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillStyle = '#111'; 
+                if(this.isPossessed) { let wMouse = screenToWorld(mouseX, mouseY); ctx.save(); ctx.translate(this.x+12, this.y+15); ctx.rotate(Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+12))); ctx.fillRect(0, -5, 25, 10); ctx.restore(); ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+12, this.y - 10); ctx.lineTo(this.x+7, this.y - 20); ctx.lineTo(this.x+17, this.y - 20); ctx.fill(); } else { ctx.fillRect(Math.trunc(this.x)+(this.dir===1?15:-15), Math.trunc(this.y)+10, 25, 10); }
                 ctx.fillStyle = '#0ff'; ctx.fillRect(Math.trunc(this.x)+(this.dir===1?15:0), Math.trunc(this.y)+5, 10, 5); 
             }
         }
@@ -1601,37 +886,16 @@
             update() {
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+20, this.y+10, 20, true); return; } if (draggedObj === this) return;
                 this.rotorAngle += 0.5;
-
                 if (this.isPossessed) {
-                    this.aiState = 'possessed';
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
-                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2;
-                    if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
-                    
-                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
-                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; }
-                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; }
-                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; }
-                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; }
-                    }
-                    
+                    this.aiState = 'possessed'; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
+                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2; if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) { if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; } else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; } if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; } else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; } }
                     if(wMouse.x > this.x) this.dir = 1; else this.dir = -1;
-                    if (isMouseDown && this.shootTimer <= 0) {
-                        audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+20));
-                        addParticle(this.x+20, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 50, 3, 'bullet', this.isEnemy, 15);
-                        addParticle(this.x+20, this.y+15, (Math.random()-0.5)*2, 2, '#ffd700', 30, 2, 'casing');
-                        this.shootTimer = 5; 
-                    } else { this.shootTimer--; }
-                    return;
+                    if (isMouseDown && this.shootTimer <= 0) { audioSystem.shoot(); let angle = Math.atan2(wMouse.y-(this.y+15), wMouse.x-(this.x+20)); addParticle(this.x+20, this.y+15, Math.cos(angle)*15, Math.sin(angle)*15, this.bulletColor, 50, 3, 'bullet', this.isEnemy, 15); addParticle(this.x+20, this.y+15, (Math.random()-0.5)*2, 2, '#ffd700', 30, 2, 'casing'); this.shootTimer = 5; } else { this.shootTimer--; } return;
                 }
-
                 this.x += this.speed * this.dir; this.y += Math.sin(Date.now() / 200) * 0.5; 
-                if (this.scanForTarget(this.attackRange)) {
-                    this.shootTimer--;
-                    if (this.shootTimer <= 0) { audioSystem.shoot(); let dx = this.target.x - this.x; let dy = this.target.y - this.y; let angle = Math.atan2(dy, dx); addParticle(this.x+20, this.y+15, Math.cos(angle)*8, Math.sin(angle)*8, this.bulletColor, 50, 3, 'bullet', this.isEnemy, 8); addParticle(this.x+20, this.y+15, (Math.random()-0.5)*2, 2, '#ffd700', 30, 2, 'casing'); this.shootTimer = 8; }
-                }
+                if (this.scanForTarget(this.attackRange)) { this.shootTimer--; if (this.shootTimer <= 0) { audioSystem.shoot(); let dx = this.target.x - this.x; let dy = this.target.y - this.y; let angle = Math.atan2(dy, dx); addParticle(this.x+20, this.y+15, Math.cos(angle)*8, Math.sin(angle)*8, this.bulletColor, 50, 3, 'bullet', this.isEnemy, 8); addParticle(this.x+20, this.y+15, (Math.random()-0.5)*2, 2, '#ffd700', 30, 2, 'casing'); this.shootTimer = 8; } }
             }
             draw() {
                 if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillRect(Math.trunc(this.x) + (this.dir===1?-20:40), Math.trunc(this.y)+5, 20, 5); 
@@ -1644,33 +908,18 @@
             constructor(side, x, y) { super(side, x, y); this.width=50; this.height=12; this.isFlying=true; this.y = Math.random() * (canvas.height / 3); this.speed = Math.random() * 4 + 3; this.dropTimer = Math.random() * 80 + 40; this.maxHealth = 50; this.health = 50; this.color = this.isEnemy ? '#442222' : '#778899'; }
             update() {
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+25, this.y+5, 20, false); return; } if (draggedObj === this) return;
-                
                 if (this.isPossessed) {
-                    this.aiState = 'possessed';
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 1.5; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.x += this.speed * 1.5; this.dir = 1; }
-                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 1.5;
-                    if (keys['s'] || keys['arrowdown']) this.y += this.speed * 1.5;
-                    
-                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
-                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 1.5; this.dir = -1;}
-                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 1.5; this.dir = 1;}
-                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 1.5; }
-                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 1.5; }
-                    }
-
-                    if (isMouseDown && this.dropTimer <= 0) { addParticle(this.x+15, this.y+10, this.dir*2, 5, '#222', 120, 6, 'bomb', this.isEnemy, 100); this.dropTimer = 20; }
-                    this.dropTimer--;
-                    return;
+                    this.aiState = 'possessed'; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 1.5; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.x += this.speed * 1.5; this.dir = 1; }
+                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 1.5; if (keys['s'] || keys['arrowdown']) this.y += this.speed * 1.5;
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) { if (wMouse.x < this.x - 10) { this.x -= this.speed * 1.5; this.dir = -1;} else if (wMouse.x > this.x + 10) { this.x += this.speed * 1.5; this.dir = 1;} if (wMouse.y < this.y - 10) { this.y -= this.speed * 1.5; } else if (wMouse.y > this.y + 10) { this.y += this.speed * 1.5; } }
+                    if (isMouseDown && this.dropTimer <= 0) { addParticle(this.x+15, this.y+10, this.dir*2, 5, '#222', 120, 6, 'bomb', this.isEnemy, 100); this.dropTimer = 20; } this.dropTimer--; return;
                 }
-
                 this.x += this.speed * this.dir; this.dropTimer--;
                 if (this.dropTimer <= 0) { addParticle(this.x+15, this.y+10, this.dir*2, 2, '#222', 120, 6, 'bomb', this.isEnemy, 100); this.dropTimer = Math.random() * 100 + 80; }
             }
             draw() {
-                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillRect(Math.trunc(this.x)+20, Math.trunc(this.y)-10, 10, 30); 
-                ctx.fillStyle = '#ff4500'; ctx.fillRect(Math.trunc(this.x) + (this.dir===1?-5:50), Math.trunc(this.y)+3, 5, 6); 
+                if (this.dead) return; ctx.fillStyle = this.color; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height); ctx.fillRect(Math.trunc(this.x)+20, Math.trunc(this.y)-10, 10, 30); ctx.fillStyle = '#ff4500'; ctx.fillRect(Math.trunc(this.x) + (this.dir===1?-5:50), Math.trunc(this.y)+3, 5, 6); 
                 if(this.isPossessed) { ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.moveTo(this.x+25, this.y - 15); ctx.lineTo(this.x+20, this.y - 25); ctx.lineTo(this.x+30, this.y - 25); ctx.fill(); }
             }
         }
@@ -1679,40 +928,18 @@
             constructor(side, x, y) { super(side, x, y); this.width=60; this.height=20; this.isFlying=true; this.y = Math.random() * (canvas.height / 3); this.speed = 3; this.maxHealth = 300; this.health = 300; this.color = '#777'; this.beamActive = false; }
             update() {
                 if (this.health <= 0) { this.dead = true; if(possessedEntity===this) possessedEntity=null; createExplosion(this.x+30, this.y+10, 50, true); return; } if (draggedObj === this) return;
-                
                 this.y += Math.sin(Date.now() / 200) * 1.5; 
-
                 if (this.isPossessed) {
-                    this.beamActive = false;
-                    let wMouse = screenToWorld(mouseX, mouseY);
-                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; }
-                    if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
-                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2;
-                    if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
-                    
-                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) {
-                        if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; }
-                        else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; }
-                        if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; }
-                        else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; }
-                    }
-
-                    if (isMouseDown) {
-                        this.beamActive = true;
-                        for(let e of entities) { if(!e.dead && e !== this && Math.abs(e.x - (this.x+this.width/2)) < 30 && e.y > this.y) { e.y -= 5; e.vy = 0; e.isFlying = true; setTimeout(()=>{e.isFlying=false;}, 500); } }
-                        for(let r of ragdolls) { if(Math.abs(r.points[0].x - (this.x+this.width/2)) < 30 && r.points[0].y > this.y) { r.points.forEach(p=>{p.y-=5; p.oldy=p.y;}); } }
-                    }
+                    this.beamActive = false; let wMouse = screenToWorld(mouseX, mouseY);
+                    if (keys['a'] || keys['arrowleft']) { this.x -= this.speed * 2; this.dir = -1; } if (keys['d'] || keys['arrowright']) { this.x += this.speed * 2; this.dir = 1; }
+                    if (keys['w'] || keys['arrowup']) this.y -= this.speed * 2; if (keys['s'] || keys['arrowdown']) this.y += this.speed * 2;
+                    if (isMouseDown && !keys['a'] && !keys['d'] && !keys['w'] && !keys['s']) { if (wMouse.x < this.x - 10) { this.x -= this.speed * 2; } else if (wMouse.x > this.x + 10) { this.x += this.speed * 2; } if (wMouse.y < this.y - 10) { this.y -= this.speed * 2; } else if (wMouse.y > this.y + 10) { this.y += this.speed * 2; } }
+                    if (isMouseDown) { this.beamActive = true; for(let e of entities) { if(!e.dead && e !== this && Math.abs(e.x - (this.x+this.width/2)) < 30 && e.y > this.y) { e.y -= 5; e.vy = 0; e.isFlying = true; setTimeout(()=>{e.isFlying=false;}, 500); } } for(let r of ragdolls) { if(Math.abs(r.points[0].x - (this.x+this.width/2)) < 30 && r.points[0].y > this.y) { r.points.forEach(p=>{p.y-=5; p.oldy=p.y;}); } } }
                     return;
                 }
-
                 this.beamActive = false;
                 if (this.scanForTarget(300)) {
-                    if (Math.abs(this.target.x - this.x) > 10) { this.x += this.target.x > this.x ? this.speed : -this.speed; }
-                    else { 
-                        this.beamActive = true; 
-                        this.target.y -= 3; this.target.vy = 0; this.target.isFlying = true; setTimeout(()=>{if(this.target) this.target.isFlying=false;}, 500);
-                        if (this.target.y < this.y + 20) { this.target.health = 0; audioSystem.hit(); } 
-                    }
+                    if (Math.abs(this.target.x - this.x) > 10) { this.x += this.target.x > this.x ? this.speed : -this.speed; } else { this.beamActive = true; this.target.y -= 3; this.target.vy = 0; this.target.isFlying = true; setTimeout(()=>{if(this.target) this.target.isFlying=false;}, 500); if (this.target.y < this.y + 20) { this.target.health = 0; audioSystem.hit(); } }
                 } else { this.x += this.speed * this.dir; if(Math.random()<0.01) this.dir *= -1; }
             }
             draw() {
@@ -1727,20 +954,14 @@
         class FlyingChair {
             constructor() { this.width = 30; this.height = 40; this.isFlying = true; this.dead = false; this.x = camera.x; this.y = camera.y - canvas.height/camera.zoom; this.vy = 2; this.timer = 180; }
             update() { this.y += this.vy; this.x += Math.sin(Date.now() / 150) * 4; this.timer--; if (this.timer <= 0 && !isBSOD) triggerBSOD(); }
-            draw() {
-                ctx.fillStyle = '#8b4513'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 20, 30, 10); ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), 10, 40); ctx.fillRect(Math.trunc(this.x) + 20, Math.trunc(this.y) + 30, 10, 10); 
-                ctx.fillStyle = `rgba(0, 255, 255, ${Math.random()})`; ctx.beginPath(); ctx.arc(this.x + 15, this.y + 20, 30 + Math.random()*10, 0, Math.PI*2); ctx.fill();
-            }
+            draw() { ctx.fillStyle = '#8b4513'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y) + 20, 30, 10); ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), 10, 40); ctx.fillRect(Math.trunc(this.x) + 20, Math.trunc(this.y) + 30, 10, 10); ctx.fillStyle = `rgba(0, 255, 255, ${Math.random()})`; ctx.beginPath(); ctx.arc(this.x + 15, this.y + 20, 30 + Math.random()*10, 0, Math.PI*2); ctx.fill(); }
         }
 
         class NukeMissile {
             constructor(x) { this.width = 30; this.height = 100; this.x = x - 15; this.y = camera.y - canvas.height/camera.zoom - 200; this.vy = 5; this.dead = false; this.isFlying = true; }
             update() {
                 this.y += this.vy; addParticle(this.x+15, this.y, (Math.random()-0.5)*5, -5, '#ff4500', 40, 6, 'flame'); let gy = getGroundY(this.x);
-                if (this.y >= gy - this.height) {
-                    this.dead = true; screenShake = 60; nukeFlash = 1.0; createExplosion(this.x+15, gy, 400, false); destroyTerrain(this.x+15, 250); 
-                    structures.forEach(s => s.destroyed = true); entities.forEach(e => { if(e.health) e.health = -1000; });
-                }
+                if (this.y >= gy - this.height) { this.dead = true; screenShake = 60; nukeFlash = 1.0; createExplosion(this.x+15, gy, 400, false); destroyTerrain(this.x+15, 250); structures.forEach(s => s.destroyed = true); entities.forEach(e => { if(e.health) e.health = -1000; }); }
             }
             draw() {
                 ctx.fillStyle = '#444'; ctx.fillRect(Math.trunc(this.x), Math.trunc(this.y), this.width, this.height);
@@ -1749,186 +970,190 @@
             }
         }
 
-        // --- MAIN LOOP ---
+        // --- GŁÓWNA PĘTLA Z ZABEZPIECZENIEM (STAIRCASE BUG FIX) ---
         function animate() {
+            // Zabezpieczenie Matrixa kamery przed wyrzuceniem błędu (naprawia efekt schodów)
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            bloomCtx.setTransform(1, 0, 0, 1, 0, 0);
+            if(lightCtx) lightCtx.setTransform(1, 0, 0, 1, 0, 0);
+
             requestAnimationFrame(animate);
 
             if (isBSOD) return; 
 
-            // FPS LIMITER
-            now = performance.now(); elapsed = now - then; if (elapsed <= fpsInterval) return; then = now - (elapsed % fpsInterval);
+            try {
+                now = performance.now(); elapsed = now - then; if (elapsed <= fpsInterval) return; then = now - (elapsed % fpsInterval);
 
-            // WIND LOGIC
-            if (Math.random() < 0.02) targetWind = (Math.random() - 0.5) * 8;
-            if (currentWeather === 'thunderstorm' || tornadoes.length > 0) targetWind = (Math.random() - 0.5) * 20;
-            globalWind += (targetWind - globalWind) * 0.05;
+                if (Math.random() < 0.02) targetWind = (Math.random() - 0.5) * 8;
+                if (currentWeather === 'thunderstorm' || tornadoes.length > 0) targetWind = (Math.random() - 0.5) * 20;
+                globalWind += (targetWind - globalWind) * 0.05;
 
-            // CAMERA FOLLOW POSSESSED ENTITY
-            if (possessedEntity && !possessedEntity.dead) {
-                camera.x += (possessedEntity.x + possessedEntity.width/2 - camera.x) * 0.1;
-                camera.y += (possessedEntity.y + possessedEntity.height/2 - camera.y) * 0.1;
-            } else {
-                let camSpeed = 10 / camera.zoom;
-                if (keys['w'] || keys['arrowup']) camera.y -= camSpeed;
-                if (keys['s'] || keys['arrowdown']) camera.y += camSpeed;
-                if (keys['a'] || keys['arrowleft']) camera.x -= camSpeed;
-                if (keys['d'] || keys['arrowright']) camera.x += camSpeed;
-            }
-            camera.zoom += (camera.targetZoom - camera.zoom) * 0.1;
+                if (possessedEntity && !possessedEntity.dead) {
+                    camera.x += (possessedEntity.x + possessedEntity.width/2 - camera.x) * 0.1;
+                    camera.y += (possessedEntity.y + possessedEntity.height/2 - camera.y) * 0.1;
+                } else {
+                    let camSpeed = 10 / camera.zoom;
+                    if (keys['w'] || keys['arrowup']) camera.y -= camSpeed;
+                    if (keys['s'] || keys['arrowdown']) camera.y += camSpeed;
+                    if (keys['a'] || keys['arrowleft']) camera.x -= camSpeed;
+                    if (keys['d'] || keys['arrowright']) camera.x += camSpeed;
+                }
+                camera.zoom += (camera.targetZoom - camera.zoom) * 0.1;
 
-            let darkness = drawSkyAndLighting();
-            drawParallaxBackground(darkness);
+                let darkness = drawSkyAndLighting();
+                drawParallaxBackground(darkness);
 
-            ctx.save(); ctx.translate(canvas.width/2, canvas.height/2);
-            if (screenShake > 0) { ctx.translate((Math.random()-0.5)*screenShake, (Math.random()-0.5)*screenShake); screenShake--; }
-            ctx.scale(camera.zoom, camera.zoom); ctx.translate(-camera.x, -camera.y);
+                ctx.save(); ctx.translate(canvas.width/2, canvas.height/2);
+                if (screenShake > 0) { ctx.translate((Math.random()-0.5)*screenShake, (Math.random()-0.5)*screenShake); screenShake--; }
+                ctx.scale(camera.zoom, camera.zoom); ctx.translate(-camera.x, -camera.y);
 
-            if ((currentWeather === 'rain' || currentWeather === 'thunderstorm') && Math.random() < 0.8) {
-                addParticle(camera.x + (Math.random()-0.5)*canvas.width/camera.zoom - globalWind*10, camera.y - canvas.height/(2*camera.zoom), (Math.random()-0.5), 15, 'rgba(150, 180, 255, 0.4)', 150, 2, 'weather');
-            } else if (currentWeather === 'snow' && Math.random() < 0.4) {
-                addParticle(camera.x + (Math.random()-0.5)*canvas.width/camera.zoom - globalWind*10, camera.y - canvas.height/(2*camera.zoom), (Math.random()-0.5)*2, 3, 'rgba(255, 255, 255, 0.8)', 300, Math.random()*3+2, 'weather');
-            }
-
-            ctx.fillStyle = currentMap.ground; ctx.beginPath();
-            let startX = camera.x - canvas.width/(2*camera.zoom); let endX = camera.x + canvas.width/(2*camera.zoom);
-            let camBottom = camera.y + canvas.height/(2*camera.zoom) + 1500; let fillBottom = Math.max(canvas.height + 500, camBottom);
-            
-            ctx.moveTo(startX - 100, fillBottom);
-            for(let x = startX - 100; x < endX + 100; x += 4) { ctx.lineTo(x, getGroundY(x)); }
-            ctx.lineTo(endX + 100, fillBottom); ctx.fill();
-
-            if (globalWaterLevel < fillBottom) {
-                ctx.fillStyle = 'rgba(0, 150, 255, 0.4)'; ctx.fillRect(startX - 100, globalWaterLevel, (endX - startX) + 200, fillBottom - globalWaterLevel);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                for(let wx = startX - 100; wx < endX + 100; wx += 20) { ctx.fillRect(wx + Math.sin(Date.now()/200 + wx + globalWind)*10, globalWaterLevel, 10, 2); }
-            }
-
-            for(let i = tornadoes.length - 1; i >= 0; i--) {
-                let t = tornadoes[i]; t.x += t.vx + globalWind*0.1; t.life--;
-                ctx.fillStyle = `rgba(150, 150, 150, 0.4)`;
-                for(let j=0; j<25; j++) { let w = 15 + j*4; ctx.fillRect(t.x - w/2 + Math.sin(Date.now()/100 + j)*15, getGroundY(t.x) - j*15, w, 15); }
-                entities.forEach(e => { if(!e.dead && Math.abs(e.x - t.x) < 100) { e.x += (t.x - e.x)*0.05; e.vy -= 1.5; } });
-                particles.forEach(p => { if(Math.abs(t.x - p.x) < 80) { p.vx += (t.x - p.x)*0.05; p.vy -= 2; } });
-                ragdolls.forEach(r => { if(Math.abs(r.points[0].x - t.x) < 100) { r.points.forEach(p => {p.oldx -= (t.x - p.x)*0.01; p.oldy += 1;}); } });
-                if(t.life <= 0) tornadoes.splice(i, 1);
-            }
-
-            for (let s of structures) s.draw();
-
-            if (Math.random() < 0.01 && entities.length < 80) {
-                let r = Math.random();
-                if (r < 0.3) entities.push(new Soldier()); 
-                else if (r < 0.4) entities.push(new Civilian()); 
-                else if (r < 0.6) entities.push(new MachineGunner()); 
-                else if (r < 0.7) entities.push(new Sniper()); 
-                else if (r < 0.8) entities.push(new Rocketeer()); 
-                else entities.push(new Medic());
-            }
-
-            for (let i = entities.length - 1; i >= 0; i--) {
-                entities[i].update(); entities[i].draw();
-                if (entities[i].dead || Math.abs(entities[i].x - camera.x) > canvas.width/camera.zoom + 1000 || entities[i].y > canvas.height + 1500) entities.splice(i, 1);
-            }
-            
-            for (let i = ragdolls.length - 1; i >= 0; i--) { ragdolls[i].update(); ragdolls[i].draw(); if(ragdolls[i].life <= 0) ragdolls.splice(i, 1); }
-
-            bloomCtx.clearRect(0, 0, bloomCanvas.width, bloomCanvas.height); bloomCtx.save();
-            bloomCtx.translate(bloomCanvas.width/2, bloomCanvas.height/2); bloomCtx.scale(camera.zoom, camera.zoom); bloomCtx.translate(-camera.x, -camera.y);
-
-            // LIGHTMAP & BLOOM RENDERING
-            if (darkness > 0.05 || isDisco) {
-                lightCtx.clearRect(0, 0, canvas.width, canvas.height); lightCtx.globalCompositeOperation = 'source-over';
-                lightCtx.fillStyle = `rgba(0, 0, 15, ${isDisco ? 0.3 : darkness})`; lightCtx.fillRect(0, 0, canvas.width, canvas.height);
-                lightCtx.globalCompositeOperation = 'destination-out'; lightCtx.save(); lightCtx.translate(canvas.width/2, canvas.height/2);
-                lightCtx.scale(camera.zoom, camera.zoom); lightCtx.translate(-camera.x, -camera.y);
-
-                function drawLight(x, y, radius, intensity) {
-                    let g = lightCtx.createRadialGradient(x, y, 0, x, y, radius);
-                    g.addColorStop(0, `rgba(255,255,255,${intensity})`); g.addColorStop(1, 'rgba(255,255,255,0)');
-                    lightCtx.fillStyle = g; lightCtx.beginPath(); lightCtx.arc(x, y, radius, 0, Math.PI*2); lightCtx.fill();
+                if ((currentWeather === 'rain' || currentWeather === 'thunderstorm') && Math.random() < 0.8) {
+                    addParticle(camera.x + (Math.random()-0.5)*canvas.width/camera.zoom - globalWind*10, camera.y - canvas.height/(2*camera.zoom), (Math.random()-0.5), 15, 'rgba(150, 180, 255, 0.4)', 150, 2, 'weather');
+                } else if (currentWeather === 'snow' && Math.random() < 0.4) {
+                    addParticle(camera.x + (Math.random()-0.5)*canvas.width/camera.zoom - globalWind*10, camera.y - canvas.height/(2*camera.zoom), (Math.random()-0.5)*2, 3, 'rgba(255, 255, 255, 0.8)', 300, Math.random()*3+2, 'weather');
                 }
 
-                for (let p of particles) {
-                    if (p.type === 'explosion') drawLight(p.x, p.y, p.size * 5, 0.8);
-                    if (p.type === 'flame') drawLight(p.x, p.y, p.size * 4, 0.6);
-                    if (p.type === 'rocket') drawLight(p.x, p.y, 40, 0.4);
-                }
-                for (let l of orbitalLasers) drawLight(l.x, getGroundY(l.x)/2, l.radius*10, 1.0);
-                if (nukeFlash > 0) drawLight(camera.x, camera.y, canvas.width/camera.zoom, nukeFlash);
+                ctx.fillStyle = currentMap.ground; ctx.beginPath();
+                let startX = camera.x - canvas.width/(2*camera.zoom); let endX = camera.x + canvas.width/(2*camera.zoom);
+                let camBottom = camera.y + canvas.height/(2*camera.zoom) + 1500; let fillBottom = Math.max(canvas.height + 500, camBottom);
                 
-                for (let lb of lightningBolts) { for(let p=0; p<lb.path.length; p+=2) drawLight(lb.path[p].x, lb.path[p].y, 40, (lb.life/20) * 0.6); }
+                ctx.moveTo(startX - 100, fillBottom);
+                for(let x = startX - 100; x < endX + 100; x += 4) { ctx.lineTo(x, getGroundY(x)); }
+                ctx.lineTo(endX + 100, fillBottom); ctx.fill();
 
-                if (gameTime <= 5 || gameTime >= 19) {
-                    let moonX = camera.x + ((gameTime < 6 ? gameTime+18 : gameTime-6) / 24) * canvas.width - canvas.width/2;
-                    let moonY = camera.y - canvas.height/camera.zoom/2 + 100; drawLight(moonX, moonY, 300, 0.5);
+                if (globalWaterLevel < fillBottom) {
+                    ctx.fillStyle = 'rgba(0, 150, 255, 0.4)'; ctx.fillRect(startX - 100, globalWaterLevel, (endX - startX) + 200, fillBottom - globalWaterLevel);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                    for(let wx = startX - 100; wx < endX + 100; wx += 20) { ctx.fillRect(wx + Math.sin(Date.now()/200 + wx + globalWind)*10, globalWaterLevel, 10, 2); }
                 }
-                lightCtx.restore(); ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(lightCanvas, 0, 0); ctx.restore(); 
-            }
 
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i]; p.update(); p.draw(ctx);
-                if (p.type === 'bullet' || p.type === 'rocket' || p.type === 'flame' || p.type === 'explosion') { p.draw(bloomCtx); }
+                for(let i = tornadoes.length - 1; i >= 0; i--) {
+                    let t = tornadoes[i]; t.x += t.vx + globalWind*0.1; t.life--;
+                    ctx.fillStyle = `rgba(150, 150, 150, 0.4)`;
+                    for(let j=0; j<25; j++) { let w = 15 + j*4; ctx.fillRect(t.x - w/2 + Math.sin(Date.now()/100 + j)*15, getGroundY(t.x) - j*15, w, 15); }
+                    entities.forEach(e => { if(!e.dead && Math.abs(e.x - t.x) < 100) { e.x += (t.x - e.x)*0.05; e.vy -= 1.5; } });
+                    particles.forEach(p => { if(Math.abs(t.x - p.x) < 80) { p.vx += (t.x - p.x)*0.05; p.vy -= 2; } });
+                    ragdolls.forEach(r => { if(Math.abs(r.points[0].x - t.x) < 100) { r.points.forEach(p => {p.oldx -= (t.x - p.x)*0.01; p.oldy += 1;}); } });
+                    if(t.life <= 0) tornadoes.splice(i, 1);
+                }
 
-                if (p.type === 'bullet' || p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell' || p.type === 'flame' || p.type === 'flak' || p.type === 'arrow' || p.type === 'banana_bomb') {
-                    for (let e of entities) {
-                        if (!e.dead && e.side !== p.isEnemy && p.x > e.x && p.x < e.x + e.width && p.y > e.y && p.y < e.y + e.height) { 
-                            if (e.cover && Math.random() < 0.7 && (p.type === 'bullet' || p.type === 'arrow')) { p.life = 0; break; } 
-                            let prev = e.health; e.health -= p.damage;
-                            
-                            if(e.health <= 0 && prev > 0 && e.width <= 15) ragdolls.push(new Ragdoll(e.x+e.width/2, e.y, e.color, p.vx*0.5, p.vy*0.5));
-                            if (p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell' || p.type === 'flak' || p.type === 'banana_bomb') createExplosion(p.x, p.y, 35, true, 80);
-                            else if (p.type === 'flame') addParticle(p.x, p.y, 0, 0, '#ff4500', 10, 4, 'explosion');
-                            else { audioSystem.hit(); addParticle(p.x, p.y, 0, 0, '#fff', 5, 4, 'explosion'); }
-                            p.life = 0; break;
+                for (let s of structures) s.draw();
+
+                if (Math.random() < 0.01 && entities.length < 80) {
+                    let r = Math.random();
+                    if (r < 0.3) entities.push(new Soldier()); 
+                    else if (r < 0.4) entities.push(new Civilian()); 
+                    else if (r < 0.6) entities.push(new MachineGunner()); 
+                    else if (r < 0.7) entities.push(new Sniper()); 
+                    else if (r < 0.8) entities.push(new Rocketeer()); 
+                    else entities.push(new Medic());
+                }
+
+                for (let i = entities.length - 1; i >= 0; i--) {
+                    entities[i].update(); entities[i].draw();
+                    if (entities[i].dead || Math.abs(entities[i].x - camera.x) > canvas.width/camera.zoom + 1000 || entities[i].y > canvas.height + 1500) entities.splice(i, 1);
+                }
+                
+                for (let i = ragdolls.length - 1; i >= 0; i--) { ragdolls[i].update(); ragdolls[i].draw(); if(ragdolls[i].life <= 0) ragdolls.splice(i, 1); }
+
+                bloomCtx.clearRect(0, 0, bloomCanvas.width, bloomCanvas.height); bloomCtx.save();
+                bloomCtx.translate(bloomCanvas.width/2, bloomCanvas.height/2); bloomCtx.scale(camera.zoom, camera.zoom); bloomCtx.translate(-camera.x, -camera.y);
+
+                if (darkness > 0.05 || isDisco) {
+                    lightCtx.clearRect(0, 0, canvas.width, canvas.height); lightCtx.globalCompositeOperation = 'source-over';
+                    lightCtx.fillStyle = `rgba(0, 0, 15, ${isDisco ? 0.3 : darkness})`; lightCtx.fillRect(0, 0, canvas.width, canvas.height);
+                    lightCtx.globalCompositeOperation = 'destination-out'; lightCtx.save(); lightCtx.translate(canvas.width/2, canvas.height/2);
+                    lightCtx.scale(camera.zoom, camera.zoom); lightCtx.translate(-camera.x, -camera.y);
+
+                    function drawLight(x, y, radius, intensity) {
+                        let g = lightCtx.createRadialGradient(x, y, 0, x, y, radius);
+                        g.addColorStop(0, `rgba(255,255,255,${intensity})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+                        lightCtx.fillStyle = g; lightCtx.beginPath(); lightCtx.arc(x, y, radius, 0, Math.PI*2); lightCtx.fill();
+                    }
+
+                    for (let p of particles) {
+                        if (p.type === 'explosion') drawLight(p.x, p.y, p.size * 5, 0.8);
+                        if (p.type === 'flame') drawLight(p.x, p.y, p.size * 4, 0.6);
+                        if (p.type === 'rocket') drawLight(p.x, p.y, 40, 0.4);
+                    }
+                    for (let l of orbitalLasers) drawLight(l.x, getGroundY(l.x)/2, l.radius*10, 1.0);
+                    if (nukeFlash > 0) drawLight(camera.x, camera.y, canvas.width/camera.zoom, nukeFlash);
+                    
+                    for (let lb of lightningBolts) { for(let p=0; p<lb.path.length; p+=2) drawLight(lb.path[p].x, lb.path[p].y, 40, (lb.life/20) * 0.6); }
+
+                    if (gameTime <= 5 || gameTime >= 19) {
+                        let moonX = camera.x + ((gameTime < 6 ? gameTime+18 : gameTime-6) / 24) * canvas.width - canvas.width/2;
+                        let moonY = camera.y - canvas.height/camera.zoom/2 + 100; drawLight(moonX, moonY, 300, 0.5);
+                    }
+                    lightCtx.restore(); ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(lightCanvas, 0, 0); ctx.restore(); 
+                }
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i]; p.update(); p.draw(ctx);
+                    if (p.type === 'bullet' || p.type === 'rocket' || p.type === 'flame' || p.type === 'explosion') { p.draw(bloomCtx); }
+
+                    if (p.type === 'bullet' || p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell' || p.type === 'flame' || p.type === 'flak' || p.type === 'arrow' || p.type === 'banana_bomb') {
+                        for (let e of entities) {
+                            if (!e.dead && e.side !== p.isEnemy && p.x > e.x && p.x < e.x + e.width && p.y > e.y && p.y < e.y + e.height) { 
+                                if (e.cover && Math.random() < 0.7 && (p.type === 'bullet' || p.type === 'arrow')) { p.life = 0; break; } 
+                                let prev = e.health; e.health -= p.damage;
+                                
+                                if(e.health <= 0 && prev > 0 && e.width <= 15) ragdolls.push(new Ragdoll(e.x+e.width/2, e.y, e.color, p.vx*0.5, p.vy*0.5));
+                                if (p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell' || p.type === 'flak' || p.type === 'banana_bomb') createExplosion(p.x, p.y, 35, true, 80);
+                                else if (p.type === 'flame') addParticle(p.x, p.y, 0, 0, '#ff4500', 10, 4, 'explosion');
+                                else { audioSystem.hit(); addParticle(p.x, p.y, 0, 0, '#fff', 5, 4, 'explosion'); }
+                                p.life = 0; break;
+                            }
                         }
                     }
+
+                    if (p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell') {
+                        for (let s of structures) if (!s.destroyed && p.x > s.x && p.x < s.x + s.width && p.y > s.y && p.y < s.y + s.height) { createExplosion(p.x, p.y, 40, true, 100); p.life = 0; break; }
+                        let gy = getGroundY(p.x); if (p.y >= gy || p.y >= globalWaterLevel) { createExplosion(p.x, Math.min(gy, globalWaterLevel), 40, true, 80); p.life = 0; }
+                    }
+                    if (p.life <= 0) particles.splice(i, 1);
                 }
 
-                if (p.type === 'bomb' || p.type === 'rocket' || p.type === 'artillery_shell') {
-                    for (let s of structures) if (!s.destroyed && p.x > s.x && p.x < s.x + s.width && p.y > s.y && p.y < s.y + s.height) { createExplosion(p.x, p.y, 40, true, 100); p.life = 0; break; }
-                    let gy = getGroundY(p.x); if (p.y >= gy || p.y >= globalWaterLevel) { createExplosion(p.x, Math.min(gy, globalWaterLevel), 40, true, 80); p.life = 0; }
+                for (let i = orbitalLasers.length - 1; i >= 0; i--) {
+                    let l = orbitalLasers[i]; l.life--; let gy = getGroundY(l.x);
+                    ctx.fillStyle = `rgba(0, 255, 255, ${l.life / 60})`; ctx.fillRect(l.x - l.radius, camera.y - canvas.height/camera.zoom, l.radius * 2, gy - (camera.y - canvas.height/camera.zoom));
+                    ctx.fillStyle = `rgba(255, 255, 255, ${l.life / 60})`; ctx.fillRect(l.x - l.radius/2, camera.y - canvas.height/camera.zoom, l.radius, gy - (camera.y - canvas.height/camera.zoom));
+                    bloomCtx.fillStyle = `rgba(0, 255, 255, ${l.life / 60})`; bloomCtx.fillRect(l.x - l.radius, camera.y - canvas.height/camera.zoom, l.radius * 2, gy - (camera.y - canvas.height/camera.zoom));
+                    damageArea(l.x, gy, 20); destroyTerrain(l.x, 5); createExplosion(l.x + (Math.random()-0.5)*l.radius*2, gy, 2, false, 0);
+                    if(l.life <= 0) orbitalLasers.splice(i, 1);
                 }
 
-                if (p.life <= 0) particles.splice(i, 1);
+                for (let i = lightningBolts.length - 1; i >= 0; i--) {
+                    let lb = lightningBolts[i]; lb.life--;
+                    ctx.strokeStyle = lb.color; ctx.lineWidth = Math.max(1, lb.maxThickness * (lb.life / 10));
+                    bloomCtx.strokeStyle = lb.color; bloomCtx.lineWidth = Math.max(1, lb.maxThickness * (lb.life / 10));
+                    ctx.beginPath(); bloomCtx.beginPath();
+                    ctx.moveTo(lb.path[0].x, lb.path[0].y); bloomCtx.moveTo(lb.path[0].x, lb.path[0].y);
+                    for(let p=1; p<lb.path.length; p++) { ctx.lineTo(lb.path[p].x, lb.path[p].y); bloomCtx.lineTo(lb.path[p].x, lb.path[p].y); }
+                    ctx.stroke(); bloomCtx.stroke();
+                    if(lb.life <= 0) lightningBolts.splice(i, 1);
+                }
+
+                if (possessedEntity && !possessedEntity.dead) {
+                    let wMouse = screenToWorld(mouseX, mouseY);
+                    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.arc(wMouse.x, wMouse.y, 10, 0, Math.PI*2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(wMouse.x-15, wMouse.y); ctx.lineTo(wMouse.x+15, wMouse.y); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(wMouse.x, wMouse.y-15); ctx.lineTo(wMouse.x, wMouse.y+15); ctx.stroke();
+                }
+
+                ctx.restore(); 
+                bloomCtx.restore();
+
+                ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.filter = 'blur(8px)'; ctx.setTransform(1, 0, 0, 1, 0, 0); 
+                ctx.drawImage(bloomCanvas, 0, 0); ctx.filter = 'blur(2px)'; ctx.drawImage(bloomCanvas, 0, 0); ctx.restore();
+
+                if (nukeFlash > 0) { ctx.fillStyle = `rgba(255, 255, 255, ${nukeFlash})`; ctx.fillRect(0, 0, canvas.width, canvas.height); nukeFlash -= 0.02; }
+                updateTime();
+                
+            } catch (err) {
+                console.error("Złapano błąd rysowania. Zapobiegnięto uszkodzeniu wizualnemu gry:", err);
             }
-
-            for (let i = orbitalLasers.length - 1; i >= 0; i--) {
-                let l = orbitalLasers[i]; l.life--; let gy = getGroundY(l.x);
-                ctx.fillStyle = `rgba(0, 255, 255, ${l.life / 60})`; ctx.fillRect(l.x - l.radius, camera.y - canvas.height/camera.zoom, l.radius * 2, gy - (camera.y - canvas.height/camera.zoom));
-                ctx.fillStyle = `rgba(255, 255, 255, ${l.life / 60})`; ctx.fillRect(l.x - l.radius/2, camera.y - canvas.height/camera.zoom, l.radius, gy - (camera.y - canvas.height/camera.zoom));
-                bloomCtx.fillStyle = `rgba(0, 255, 255, ${l.life / 60})`; bloomCtx.fillRect(l.x - l.radius, camera.y - canvas.height/camera.zoom, l.radius * 2, gy - (camera.y - canvas.height/camera.zoom));
-
-                damageArea(l.x, gy, 20); destroyTerrain(l.x, 5); createExplosion(l.x + (Math.random()-0.5)*l.radius*2, gy, 2, false, 0);
-                if(l.life <= 0) orbitalLasers.splice(i, 1);
-            }
-
-            for (let i = lightningBolts.length - 1; i >= 0; i--) {
-                let lb = lightningBolts[i]; lb.life--;
-                ctx.strokeStyle = lb.color; ctx.lineWidth = Math.max(1, lb.maxThickness * (lb.life / 10));
-                bloomCtx.strokeStyle = lb.color; bloomCtx.lineWidth = Math.max(1, lb.maxThickness * (lb.life / 10));
-                ctx.beginPath(); bloomCtx.beginPath();
-                ctx.moveTo(lb.path[0].x, lb.path[0].y); bloomCtx.moveTo(lb.path[0].x, lb.path[0].y);
-                for(let p=1; p<lb.path.length; p++) { ctx.lineTo(lb.path[p].x, lb.path[p].y); bloomCtx.lineTo(lb.path[p].x, lb.path[p].y); }
-                ctx.stroke(); bloomCtx.stroke();
-                if(lb.life <= 0) lightningBolts.splice(i, 1);
-            }
-
-            // Draw target reticle if possessed
-            if (possessedEntity && !possessedEntity.dead) {
-                let wMouse = screenToWorld(mouseX, mouseY);
-                ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.arc(wMouse.x, wMouse.y, 10, 0, Math.PI*2); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(wMouse.x-15, wMouse.y); ctx.lineTo(wMouse.x+15, wMouse.y); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(wMouse.x, wMouse.y-15); ctx.lineTo(wMouse.x, wMouse.y+15); ctx.stroke();
-            }
-
-            ctx.restore(); bloomCtx.restore();
-
-            ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.filter = 'blur(8px)'; ctx.setTransform(1, 0, 0, 1, 0, 0); 
-            ctx.drawImage(bloomCanvas, 0, 0); ctx.filter = 'blur(2px)'; ctx.drawImage(bloomCanvas, 0, 0); ctx.restore();
-
-            if (nukeFlash > 0) { ctx.fillStyle = `rgba(255, 255, 255, ${nukeFlash})`; ctx.fillRect(0, 0, canvas.width, canvas.height); nukeFlash -= 0.02; }
-            updateTime();
         }
 
         resize(); window.addEventListener('resize', resize); animate();
