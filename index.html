@@ -80,7 +80,7 @@
         <h3 id="text-env">Environment & Water</h3>
         <button class="btn danger" id="text-restart" onclick="restartWorld()">🔄 RESTART WORLD</button>
         <button class="btn" onclick="skipTime()">⏩ Fast Forward 1h</button>
-        <button class="btn" onclick="toggleDisco()" style="color: #f0f;">🪩 Disco Party</button>
+        <button class="btn" onclick="toggleDisco()" style="color: #f0f;">🪩 Disco Party Epilepsy Warning</button>
         <button class="btn" onclick="globalWaterLevel -= 20" style="color:#0af">🌊 Flood World</button>
         <button class="btn" onclick="globalWaterLevel += 20" style="color:#f84">🏜️ Drain World</button>
         <button class="btn" onclick="setWeather('clear')">☀️ Clear Sky</button>
@@ -171,6 +171,7 @@
         let isMouseDown = false;
         let possessedEntity = null; 
         let mobilePanMode = false;
+        let draggedObj = null;
 
         window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
         window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
